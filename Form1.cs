@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.Expando;
 using System.Windows.Forms;
 
@@ -14,14 +15,17 @@ namespace Route_Finder
         private Label listText;
         private Label infoText;
         private System.Windows.Forms.Button expandBtn;
+        private PointsCreation p = new PointsCreation();
 
         public Form1()
         {
             InitializeComponent();
             setupDisplay();
-
+            
             this.BackColor = Color.DarkGray;
             this.Size = new Size(900, 600);
+
+            drawMap();
         }
 
         private void setupDisplay()
@@ -74,15 +78,30 @@ namespace Route_Finder
                 expandBtn.Text = "+";
             }
         }
+        
+        private void drawMap()
+        {
+            //loop through all nodes. Placing on a size*size grid. Draw lines to their connections.
+            int size = this.p.getNumberOfNodes();
+            for(int i = 0; i < size; i++)
+            {
+                for(int ii = 0; ii < size; ii++)
+                {
+                    
+                }
+            }
+
+        }
+
     }
 
-    /*public class Point
+    public class Node
     {
         private int height = 1;
-        private Dictionary<Point, int> connections = new Dictionary<Point, int>();
+        private Dictionary<Node, int> connections = new Dictionary<Node, int>();
         private int x, y;
 
-        public Point(int x, int y, int height)
+        public Node(int x, int y, int height)
         {
             this.x = x; this.y = y; this.height = height;
         }
@@ -97,25 +116,25 @@ namespace Route_Finder
             this.height = height;
         }
 
-        public Dictionary<Point, int> getConnections()
+        public Dictionary<Node, int> getConnections()
         {
             return connections;
         }
 
-        public void setAllConnections(Point p, int dist)
+        public void setAllConnections(Node p, int dist)
         {
             this.connections.Add(p, dist);
         }
 
-        public int getSpecificPoint(Point p)
+        public int getSpecificPoint(Node p)
         {
             return (int)connections[p];
         }
 
-        public List<Point> getConnection()
+        public List<Node> getConnection()
         {
-            List<Point> pointConnections = new List<Point>();
-            foreach (Point p in connections.Keys) { pointConnections.Add(p); }
+            List<Node> pointConnections = new List<Node>();
+            foreach (Node p in connections.Keys) { pointConnections.Add(p); }
             return pointConnections;
         }
 
@@ -127,7 +146,7 @@ namespace Route_Finder
         public string getStringConnectinos()
         {
             String s = "";
-            foreach (Point p in getConnection())
+            foreach (Node p in getConnection())
             {
                 s += p.getStringCoOrd() + ", ";
             }
@@ -137,40 +156,50 @@ namespace Route_Finder
 
     public class PointsCreation
     {
-        public static void Main(string[] args)
+        private const int size = 10;
+        private List<Node> points = new List<Node>();
+        
+
+        public PointsCreation()
         {
-            const int size = 10;
-            var points = new List<Point>();
 
             for (int i = 0; i < size; i++)
             {
                 for (int ii = 0; ii < size; ii++)
                 {
-                    points.Add(new Point(i, ii, 1));
+                    points.Add(new Node(i, ii, 1));
                 }
             }
 
             var rnd = new Random();
             int rnd1;
 
-            foreach (Point p in points)
+            foreach (Node p in points)
             {
                 try
                 {
                     for (int i = 0; i < size; i++)
                     {
                         rnd1 = rnd.Next(size * size);
-                        p.setAllConnections(points[rnd1], 5);
+                        p.setAllConnections(points[rnd1], 5); //All connections are directed, ie one way. It will be a pain to make it omnidirectional. 
                     }
                 }
-                catch (Exception e)
+                catch (Exception e) //For when connection has already been made.
                 {
-                    // Handle exception
+                    //Console.WriteLine(e);
                 }
                 Console.WriteLine(p.getStringCoOrd());
                 Console.WriteLine(p.getStringConnectinos());
                 Console.WriteLine("");
             }
         }
-    }*/
+
+        public Node getNode(int index)
+        {
+            return this.points[index];
+        }
+
+        public List<Node> getAllNodes() { return this.points; }
+        public int getNumberOfNodes() {  return this.points.Count; }
+    }
 }
