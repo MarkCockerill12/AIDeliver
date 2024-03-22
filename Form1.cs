@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.Expando;
 using System.Windows.Forms;
+using System.IO;
 
 namespace Route_Finder
 {
@@ -24,8 +25,6 @@ namespace Route_Finder
             
             this.BackColor = Color.DarkGray;
             this.Size = new Size(900, 600);
-
-            drawMap();
         }
 
         private void setupDisplay()
@@ -77,20 +76,6 @@ namespace Route_Finder
                 listText.Width = 300;
                 expandBtn.Text = "+";
             }
-        }
-        
-        private void drawMap()
-        {
-            //loop through all nodes. Placing on a size*size grid. Draw lines to their connections.
-            int size = this.p.getNumberOfNodes();
-            for(int i = 0; i < size; i++)
-            {
-                for(int ii = 0; ii < size; ii++)
-                {
-                    
-                }
-            }
-
         }
 
     }
@@ -163,34 +148,56 @@ namespace Route_Finder
         public PointsCreation()
         {
 
-            for (int i = 0; i < size; i++)
+            for (int j = 0; j < size; j++)
             {
                 for (int ii = 0; ii < size; ii++)
                 {
-                    points.Add(new Node(i, ii, 1));
+                    points.Add(new Node(j, ii, 1));
                 }
             }
 
-            var rnd = new Random();
-            int rnd1;
+            string f = System.IO.File.ReadAllText("data.csv");
+            f = f.Replace('\n', '\r');
+            string[] lines = f.Split(new char[] { '\r' }, StringSplitOptions.RemoveEmptyEntries);
 
+            int r = lines.Length;
+            int c = lines[0].Split(',').Length;
+
+            int[,] val = new int[r, c];
+
+            for (int j = 0; j < r; j++)
+            {
+                string[] line_i = lines[j].Split(',');
+                for (int jj = 0;jj< c; jj++)
+                {
+                    Int32.TryParse(line_i[jj], out val[j,jj]);
+                    Console.WriteLine(val[j,jj]);
+                }
+
+
+            }
+
+            int index = 0;
+            int i = 0;
             foreach (Node p in points)
             {
+                while (index < c)
+                {
                 try
-                {
-                    for (int i = 0; i < size; i++)
                     {
-                        rnd1 = rnd.Next(size * size);
-                        p.setAllConnections(points[rnd1], 5); //All connections are directed, ie one way. It will be a pain to make it omnidirectional. 
+                    Console.WriteLine(val[i, index]);
+                    p.setAllConnections(points[val[i, index]], 5);
                     }
+                    catch (Exception e) {}
+
+                    index++;
                 }
-                catch (Exception e) //For when connection has already been made.
+                i++;
+                index = 0;
+                if(i > r)
                 {
-                    //Console.WriteLine(e);
+                    break;
                 }
-                Console.WriteLine(p.getStringCoOrd());
-                Console.WriteLine(p.getStringConnectinos());
-                Console.WriteLine("");
             }
         }
 
