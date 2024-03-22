@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Route_Finder
 {
-    public class Node
+    internal class Node
     {
         private int height = 1;
         private Dictionary<Node, int> connections = new Dictionary<Node, int>();

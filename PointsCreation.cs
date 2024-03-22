@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Route_Finder
 {
-    public class PointsCreation
+    internal class PointsCreation
     {
         private const int size = 10;
         private List<Node> points = new List<Node>();
