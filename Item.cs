@@ -20,7 +20,7 @@ namespace Route_Finder
 
         public Item(string name, int quantity, float price, float weight)
         {
-            this.name = name;uu
+            this.name = name;
             this.quantity = quantity;
             this.price = price;
             this.weight = weight;
