@@ -209,6 +209,9 @@ namespace Route_Finder
             }
         }
 
+        Label totalPriceLabel = new Label();
+        Label itemsLabel = new Label();
+
         // Method to update the listText label with basket items and total price
         private void UpdateListText(List<string> basketItems)
         {
@@ -238,7 +241,7 @@ namespace Route_Finder
             listText.Text = headingText;
 
             // Create a separate label for the basket items
-            Label itemsLabel = new Label();
+            
             itemsLabel.Text = itemsText;
 
             // Set the font size and style for the basket items
@@ -253,7 +256,6 @@ namespace Route_Finder
             Controls.Add(itemsLabel);
 
             // Create a label for the total price
-            Label totalPriceLabel = new Label();
             totalPriceLabel.Text = $"Total Price: £{totalPrice:F2}"; // Format the total price with two decimal places
             totalPriceLabel.Font = new Font("Arial", 12, FontStyle.Bold);
             totalPriceLabel.ForeColor = Color.Red;
