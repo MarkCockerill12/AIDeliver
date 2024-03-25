@@ -511,8 +511,8 @@ namespace Route_Finder
             // Loop through all nodes and plot them on the map
             foreach (Node node in p.getAllNodes())
             {
-                int x = (node.X * cellSize) + cellSize / 2; // Calculate the x-coordinate with an offset to center the nodes
-                int y = (node.Y * cellSize) + cellSize / 2; // Calculate the y-coordinate with an offset to center the nodes
+                int x = (node.getX() * cellSize) + cellSize / 2; // Calculate the x-coordinate with an offset to center the nodes
+                int y = (node.getY() * cellSize) + cellSize / 2; // Calculate the y-coordinate with an offset to center the nodes
 
                 // Draw a rectangle at the calculated position to represent the node
                 g.FillRectangle(Brushes.Black, x, y, cellSize, cellSize);
@@ -529,7 +529,7 @@ namespace Route_Finder
 
     }
 
-    public class Node
+/*    public class Node
     {
         private int height = 1;
         private Dictionary<Node, int> connections = new Dictionary<Node, int>();
@@ -638,5 +638,5 @@ namespace Route_Finder
 
         public List<Node> getAllNodes() { return this.points; }
         public int getNumberOfNodes() { return this.points.Count; }
-    }
+    }*/
 }
