@@ -27,8 +27,9 @@ namespace Route_Finder
         private Button expandBtn;
         private Timer timer;
         private bool isExpanding = false;
+        private Traversal T = new Traversal();
         private int expandStep = 10;
-        private PointsCreation p = new PointsCreation();
+        
         private Button searchBtn;
         private Label shopText;
 
@@ -37,6 +38,8 @@ namespace Route_Finder
             InitializeComponent();
             setupDisplay();
             initialiseShop();
+
+            BFS search = new BFS(p.getAllNodes()[0]);
 
             this.BackColor = Color.DarkGray;
             this.Size = new Size(900, 600);
@@ -92,14 +95,14 @@ namespace Route_Finder
         private void initialiseShop()
         {
             //create search bar for shopping
-            searchShop = new TextBox {Text= "", Location = new Point(this.Width / 4, 60), Size = new Size(350, 40), Font = new Font("Arial", 26, FontStyle.Regular), BorderStyle = BorderStyle.None, BackColor = Color.Silver, ForeColor = Color.Black, Visible = false, };
+            searchShop = new TextBox { Text = "", Location = new Point(this.Width / 4, 60), Size = new Size(350, 40), Font = new Font("Arial", 26, FontStyle.Regular), BorderStyle = BorderStyle.None, BackColor = Color.Silver, ForeColor = Color.Black, Visible = false, };
             Controls.Add(searchShop);
 
             // seearch button 
-            searchBtn = new Button { Text = "🔎", ForeColor = Color.Black, FlatStyle = FlatStyle.Popup, Font = new Font("Arial", 15, FontStyle.Regular), Location = new Point(((this.Width / 4)+ 350), 60), Size = new Size(40, 40), BackColor = Color.White, Visible = false };
+            searchBtn = new Button { Text = "🔎", ForeColor = Color.Black, FlatStyle = FlatStyle.Popup, Font = new Font("Arial", 15, FontStyle.Regular), Location = new Point(((this.Width / 4) + 350), 60), Size = new Size(40, 40), BackColor = Color.White, Visible = false };
             searchBtn.Click += new EventHandler(this.searchBtn_Click);
             Controls.Add(this.searchBtn);
-           
+
 
             //add text
             shopText = new Label { Text = "Shop results", ForeColor = Color.White, BackColor = Color.DodgerBlue, Font = new Font("Arial", 20, FontStyle.Regular), BorderStyle = BorderStyle.None, AutoSize = true, AutoEllipsis = false, MaximumSize = new Size(400, 900), Location = new Point(this.Width / 4, 110), Visible = false };
@@ -146,30 +149,30 @@ namespace Route_Finder
             //FileContainsString(textFile, searchShop.Text, true);
         }
 
-       /* public static bool FileContainsString(string path, string str, bool caseSensitive = true)
-        {
-            if (String.IsNullOrEmpty(str))
-                return false;
+        /* public static bool FileContainsString(string path, string str, bool caseSensitive = true)
+         {
+             if (String.IsNullOrEmpty(str))
+                 return false;
 
-            using (var stream = new StreamReader(path))
-                while (!stream.EndOfStream)
-                {
-                    bool stringFound = true;
-                    for (int i = 0; i < str.Length; i++)
-                    {
-                        char strChar = caseSensitive ? str[i] : Char.ToUpperInvariant(str[i]);
-                        char fileChar = caseSensitive ? (char)stream.Read() : Char.ToUpperInvariant((char)stream.Read());
-                        if (strChar != fileChar)
-                        {
-                            stringFound = false;
-                            break; // break for-loop, start again with first character at next position
-                        }
-                    }
-                    if (stringFound)
-                        return true;
-                }
-            return false;
-        }*/
+             using (var stream = new StreamReader(path))
+                 while (!stream.EndOfStream)
+                 {
+                     bool stringFound = true;
+                     for (int i = 0; i < str.Length; i++)
+                     {
+                         char strChar = caseSensitive ? str[i] : Char.ToUpperInvariant(str[i]);
+                         char fileChar = caseSensitive ? (char)stream.Read() : Char.ToUpperInvariant((char)stream.Read());
+                         if (strChar != fileChar)
+                         {
+                             stringFound = false;
+                             break; // break for-loop, start again with first character at next position
+                         }
+                     }
+                     if (stringFound)
+                         return true;
+                 }
+             return false;
+         }*/
 
 
 
@@ -196,7 +199,7 @@ namespace Route_Finder
                 else
                 {
                     timer.Stop();
-                    
+
                     searchShop.Visible = true;
                     searchBtn.Visible = true;
                     shopText.Visible = true;
@@ -209,7 +212,7 @@ namespace Route_Finder
             {
                 if (shopPnl.Height > 0)
                 {
-                    
+
                     searchShop.Visible = false;
                     searchBtn.Visible = false;
                     shopText.Visible = false;
@@ -246,8 +249,8 @@ namespace Route_Finder
             // Loop through all nodes and plot them on the map
             foreach (Node node in p.getAllNodes())
             {
-                int x = (node.X * cellSize) + cellSize / 2; // Calculate the x-coordinate with an offset to center the nodes
-                int y = (node.Y * cellSize) + cellSize / 2; // Calculate the y-coordinate with an offset to center the nodes
+                int x = (node.getX() * cellSize) + cellSize / 2; // Calculate the x-coordinate with an offset to center the nodes
+                int y = (node.getY() * cellSize) + cellSize / 2; // Calculate the y-coordinate with an offset to center the nodes
 
                 // Draw a rectangle at the calculated position to represent the node
                 g.FillRectangle(Brushes.Black, x, y, cellSize, cellSize);
@@ -257,3 +260,7 @@ namespace Route_Finder
             g.Dispose();
         }
 
+        
+
+    }
+}

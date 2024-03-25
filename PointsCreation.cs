@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Route_Finder
 {
-    public class PointsCreation
+    internal class PointsCreation
     {
         private const int size = 10;
         private List<Node> points = new List<Node>();
@@ -35,7 +35,6 @@ namespace Route_Finder
                 for (int jj = 0;jj< c; jj++)
                 {
                     Int32.TryParse(line_i[jj], out val[j,jj]);
-                    Console.WriteLine(val[j,jj]);
                 }
 
 
@@ -49,10 +48,11 @@ namespace Route_Finder
                 {
                 try
                     {
-                    Console.WriteLine(val[i, index]);
                     p.setAllConnections(points[val[i, index]], 5);
                     }
-                    catch (Exception e) {}
+                    catch (Exception e) {
+                        Console.WriteLine(e);
+                    }
 
                     index++;
                 }

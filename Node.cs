@@ -3,11 +3,12 @@ using System.Collections.Generic;
 
 namespace Route_Finder
 {
-    public class Node
+    internal class Node
     {
         private int height = 1;
         private Dictionary<Node, int> connections = new Dictionary<Node, int>();
         private int x, y;
+        private bool explored = false;
 
         public Node(int x, int y, int height)
         {
@@ -27,6 +28,17 @@ namespace Route_Finder
         public Dictionary<Node, int> getConnections()
         {
             return connections;
+        }
+
+        public int getX()
+        {
+            return x;
+
+        }
+
+        public int getY()
+        {
+            return y;
         }
 
         public void setAllConnections(Node p, int dist)
@@ -60,5 +72,16 @@ namespace Route_Finder
             }
             return s;
         }
+
+        public void SetExplor()
+        {
+            explored = true;
+        }
+
+        public bool isExplored()
+        {
+            return explored;
+        }
+
     }
 }
