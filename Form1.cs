@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.CompilerServices;
@@ -6,6 +6,7 @@ using System.Runtime.InteropServices.Expando;
 using System.Windows.Forms;
 using System.IO;
 using System.Linq;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Header;
 
 //sources
 //read from file- https://www.c-sharpcorner.com/UploadFile/mahesh/how-to-read-a-text-file-in-C-Sharp/#:~:text=The%20File%20class%20provides%20two,text%20file%20into%20a%20string.
@@ -126,50 +127,88 @@ namespace Route_Finder
 
         private void searchBtn_Click(object sender, EventArgs e)
         {
-            Console.WriteLine(searchShop.Text);
+            string searchTerm = searchShop.Text.Trim().ToLower(); // Trim whitespace and convert to lowercase
+            string csvFilePath = @"C:\Users\bossu\OneDrive\Desktop\Uni\sem2\New folder\AI_Delivery\ItemList.csv"; // Path to your CSV file
 
-            string textFile = @"C:\Temp\Data\Authors.txt";
-
-            shopText.Text = searchShop.Text;
-
-            //search for shop
-            Console.WriteLine("searching for shop");
-            if (File.Exists(textFile))
+            if (!File.Exists(csvFilePath))
             {
-                // Read a text file line by line.
-                string[] lines = File.ReadAllLines(textFile);
-                foreach (string line in lines)
-                    Console.WriteLine(line);
+                MessageBox.Show("CSV file not found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
 
-            //COULD ALSO DO 
-            //FileContainsString(textFile, searchShop.Text, true);
+            // Read all lines from the CSV file
+            string[] lines = File.ReadAllLines(csvFilePath);
+
+            // Filter items that match the search term based on the item's name
+            var matchingItems = lines.Where(line => line.Split(',')[0].ToLower().Contains(searchTerm));
+
+            // Display the matching items
+            if (matchingItems.Any())
+            {
+                // Format and display each matching item
+                List<string> formattedItems = new List<string>();
+                foreach (string item in matchingItems)
+                {
+                    string[] components = item.Split(','); // Split the line into components
+
+                    // Ensure there are at least four components (name, price, quantity, weight)
+                    if (components.Length >= 4)
+                    {
+                        string formattedItem = $"{components[0]}, £{components[1]}, {components[2]}, {components[3]} kg"; // Format price and weight
+                        formattedItems.Add(formattedItem);
+                    }
+                }
+
+                // Join the formatted items with newline characters
+                string formattedText = string.Join(Environment.NewLine, formattedItems);
+
+                // Set the formatted text to the listText label
+                listText.Text = formattedText;
+
+
+
+                // Adjust the position and size of the listText label
+                listText.Size = new Size(shopPnl.Width - 20, shopPnl.Height - 120); // Adjust size to fit within the panel
+                listText.Location = new Point(20, 150); // Adjust position underneath the search bar
+
+                // Add the listText label to the shopPnl panel
+                shopPnl.Controls.Add(listText);
+                listText.BringToFront();
+
+                // Make the listText label visible
+                listText.Visible = true;
+            }
+            else
+            {
+                listText.Text = "No matching items found.";
+                listText.Visible = false; // Hide the listText label if there are no matching items
+            }
         }
 
-       /* public static bool FileContainsString(string path, string str, bool caseSensitive = true)
-        {
-            if (String.IsNullOrEmpty(str))
-                return false;
+        /* public static bool FileContainsString(string path, string str, bool caseSensitive = true)
+         {
+             if (String.IsNullOrEmpty(str))
+                 return false;
 
-            using (var stream = new StreamReader(path))
-                while (!stream.EndOfStream)
-                {
-                    bool stringFound = true;
-                    for (int i = 0; i < str.Length; i++)
-                    {
-                        char strChar = caseSensitive ? str[i] : Char.ToUpperInvariant(str[i]);
-                        char fileChar = caseSensitive ? (char)stream.Read() : Char.ToUpperInvariant((char)stream.Read());
-                        if (strChar != fileChar)
-                        {
-                            stringFound = false;
-                            break; // break for-loop, start again with first character at next position
-                        }
-                    }
-                    if (stringFound)
-                        return true;
-                }
-            return false;
-        }*/
+             using (var stream = new StreamReader(path))
+                 while (!stream.EndOfStream)
+                 {
+                     bool stringFound = true;
+                     for (int i = 0; i < str.Length; i++)
+                     {
+                         char strChar = caseSensitive ? str[i] : Char.ToUpperInvariant(str[i]);
+                         char fileChar = caseSensitive ? (char)stream.Read() : Char.ToUpperInvariant((char)stream.Read());
+                         if (strChar != fileChar)
+                         {
+                             stringFound = false;
+                             break; // break for-loop, start again with first character at next position
+                         }
+                     }
+                     if (stringFound)
+                         return true;
+                 }
+             return false;
+         }*/
 
 
 
