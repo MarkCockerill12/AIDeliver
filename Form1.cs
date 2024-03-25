@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.CompilerServices;
@@ -94,14 +94,14 @@ namespace Route_Finder
         private void initialiseShop()
         {
             //create search bar for shopping
-            searchShop = new TextBox {Text= "", Location = new Point(this.Width / 4, 60), Size = new Size(350, 40), Font = new Font("Arial", 26, FontStyle.Regular), BorderStyle = BorderStyle.None, BackColor = Color.Silver, ForeColor = Color.Black, Visible = false, };
+            searchShop = new TextBox { Text = "", Location = new Point(this.Width / 4, 60), Size = new Size(350, 40), Font = new Font("Arial", 26, FontStyle.Regular), BorderStyle = BorderStyle.None, BackColor = Color.Silver, ForeColor = Color.Black, Visible = false, };
             Controls.Add(searchShop);
 
             // seearch button 
-            searchBtn = new Button { Text = "🔎", ForeColor = Color.Black, FlatStyle = FlatStyle.Popup, Font = new Font("Arial", 15, FontStyle.Regular), Location = new Point(((this.Width / 4)+ 350), 60), Size = new Size(40, 40), BackColor = Color.White, Visible = false };
+            searchBtn = new Button { Text = "🔎", ForeColor = Color.Black, FlatStyle = FlatStyle.Popup, Font = new Font("Arial", 15, FontStyle.Regular), Location = new Point(((this.Width / 4) + 350), 60), Size = new Size(40, 40), BackColor = Color.White, Visible = false };
             searchBtn.Click += new EventHandler(this.searchBtn_Click);
             Controls.Add(this.searchBtn);
-           
+
 
             //add text
             shopText = new Label { Text = "Shop results", ForeColor = Color.White, BackColor = Color.DodgerBlue, Font = new Font("Arial", 20, FontStyle.Regular), BorderStyle = BorderStyle.None, AutoSize = true, AutoEllipsis = false, MaximumSize = new Size(400, 900), Location = new Point(this.Width / 4, 110), Visible = false };
@@ -149,7 +149,7 @@ namespace Route_Finder
         private void AddItemToBasket(string itemDetails)
         {
             // Define the path for the Basket.csv file
-            string basketFilePath = @"C:\Users\bossu\OneDrive\Desktop\Uni\sem2\New folder\AI_Delivery\Basket.csv";
+            string basketFilePath = @"Basket.csv";
 
             try
             {
@@ -212,6 +212,7 @@ namespace Route_Finder
         Label totalPriceLabel = new Label();
         Label itemsLabel = new Label();
 
+
         // Method to update the listText label with basket items and total price
         private void UpdateListText(List<string> basketItems)
         {
@@ -241,7 +242,7 @@ namespace Route_Finder
             listText.Text = headingText;
 
             // Create a separate label for the basket items
-            
+
             itemsLabel.Text = itemsText;
 
             // Set the font size and style for the basket items
@@ -280,7 +281,7 @@ namespace Route_Finder
         private void RemoveItemFromBasket(string itemDetails)
         {
             // Define the path for the Basket.csv file
-            string basketFilePath = @"C:\Users\bossu\OneDrive\Desktop\Uni\sem2\New folder\AI_Delivery\Basket.csv";
+            string basketFilePath = @"Basket.csv";
 
             try
             {
@@ -346,7 +347,7 @@ namespace Route_Finder
         private void searchBtn_Click(object sender, EventArgs e)
         {
             string searchTerm = searchShop.Text.Trim().ToLower(); // Trim whitespace and convert to lowercase
-            string csvFilePath = @"C:\Users\bossu\OneDrive\Desktop\Uni\sem2\New folder\AI_Delivery\ItemList.csv"; // Path to your CSV file
+            string csvFilePath = @"ItemList.csv"; // Path to your CSV file
 
             if (!File.Exists(csvFilePath))
             {
@@ -461,7 +462,7 @@ namespace Route_Finder
                 else
                 {
                     timer.Stop();
-                    
+
                     searchShop.Visible = true;
                     searchBtn.Visible = true;
                     shopText.Visible = true;
@@ -474,7 +475,7 @@ namespace Route_Finder
             {
                 if (shopPnl.Height > 0)
                 {
-                    
+
                     searchShop.Visible = false;
                     searchBtn.Visible = false;
                     shopText.Visible = false;
@@ -499,144 +500,10 @@ namespace Route_Finder
         }
         private void drawMap()
         {
-            // Clear the existing drawing on the map panel
-            mapText.Refresh();
 
-            // Get the Graphics object to draw on the map panel
-            Graphics g = mapText.CreateGraphics();
-
-            // Calculate the cell size based on the number of nodes and the size of the map panel
-            int cellSize = Math.Min(mapText.Width / p.getNumberOfNodes(), mapText.Height / p.getNumberOfNodes());
-
-            // Loop through all nodes and plot them on the map
-            foreach (Node node in p.getAllNodes())
-            {
-                int x = (node.getX() * cellSize) + cellSize / 2; // Calculate the x-coordinate with an offset to center the nodes
-                int y = (node.getY() * cellSize) + cellSize / 2; // Calculate the y-coordinate with an offset to center the nodes
-
-                // Draw a rectangle at the calculated position to represent the node
-                g.FillRectangle(Brushes.Black, x, y, cellSize, cellSize);
-            }
-
-            // Dispose of the Graphics object to free resources
-            g.Dispose();
         }
-
-
-
-
 
 
     }
 
-/*    public class Node
-    {
-        private int height = 1;
-        private Dictionary<Node, int> connections = new Dictionary<Node, int>();
-        public int X { get; private set; } // X coordinate property
-        public int Y { get; private set; } // Y coordinate property
-
-        public Node(int x, int y, int height)
-        {
-            this.X = x;
-            this.Y = y;
-            this.height = height;
-        }
-
-        public int getHeight()
-        {
-            return height;
-        }
-
-        public void setHeight(int height)
-        {
-            this.height = height;
-        }
-
-        public Dictionary<Node, int> getConnections()
-        {
-            return connections;
-        }
-
-        public void setAllConnections(Node p, int dist)
-        {
-            this.connections.Add(p, dist);
-        }
-
-        public int getSpecificPoint(Node p)
-        {
-            return (int)connections[p];
-        }
-
-        public List<Node> getConnection()
-        {
-            List<Node> pointConnections = new List<Node>();
-            foreach (Node p in connections.Keys) { pointConnections.Add(p); }
-            return pointConnections;
-        }
-
-        public string getStringCoOrd()
-        {
-            return X + ":" + Y;
-        }
-
-        public string getStringConnectinos()
-        {
-            String s = "";
-            foreach (Node p in getConnection())
-            {
-                s += p.getStringCoOrd() + ", ";
-            }
-            return s;
-        }
-    }
-
-    public class PointsCreation
-    {
-        private const int size = 10;
-        private List<Node> points = new List<Node>();
-
-
-        public PointsCreation()
-        {
-
-            for (int i = 0; i < size; i++)
-            {
-                for (int ii = 0; ii < size; ii++)
-                {
-                    points.Add(new Node(i, ii, 1));
-                }
-            }
-
-            var rnd = new Random();
-            int rnd1;
-
-            foreach (Node p in points)
-            {
-                try
-                {
-                    for (int i = 0; i < size; i++)
-                    {
-                        rnd1 = rnd.Next(size * size);
-                        p.setAllConnections(points[rnd1], 5); //All connections are directed, ie one way. It will be a pain to make it omnidirectional. 
-                    }
-                }
-                catch (Exception e) //For when connection has already been made.
-                {
-                    Console.WriteLine(e);
-                }
-                Console.WriteLine(p.getStringCoOrd());
-                Console.WriteLine(p.getStringConnectinos());
-                Console.WriteLine("");
-            }
-        }
-
-        public Node getNode(int index)
-        {
-            return this.points[index];
-        }
-
-        public List<Node> getAllNodes() { return this.points; }
-        public int getNumberOfNodes() { return this.points.Count; }
-    }*/
 }
