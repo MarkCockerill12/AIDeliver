@@ -39,6 +39,7 @@ namespace Route_Finder
             setupDisplay();
             initialiseShop();
 
+
             this.BackColor = Color.DarkGray;
             this.Size = new Size(900, 600);
             timer = new Timer();
@@ -117,6 +118,7 @@ namespace Route_Finder
                 shopPnl.Location = new Point((this.Width - shopPnl.Width) / 2, (this.Height - shopPnl.Height) / 2); // Set initial position below the form
                 timer.Start();
                 shopPnl.Visible = true;
+                shopPnl.BringToFront(); // Bring the red pop-up panel to the front
             }
             else
             {
@@ -141,6 +143,7 @@ namespace Route_Finder
             RemoveItemFromBasket(itemDetails);
         }
 
+        // Method to add item to basket
         // Method to add item to basket
         // Method to add item to basket
         private void AddItemToBasket(string itemDetails)
@@ -195,6 +198,9 @@ namespace Route_Finder
                 // Write the updated list back to the Basket.csv file
                 File.WriteAllLines(basketFilePath, lines);
 
+                // Update the listText label with basket items
+                UpdateListText(lines);
+
                 MessageBox.Show($"Selected item '{itemName}' added to basket.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
@@ -202,6 +208,71 @@ namespace Route_Finder
                 MessageBox.Show($"Error occurred while adding item to basket: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        // Method to update the listText label with basket items and total price
+        private void UpdateListText(List<string> basketItems)
+        {
+            string headingText = "Basket Items:\n";
+            string itemsText = "";
+
+            // Calculate total price
+            decimal totalPrice = 0;
+
+            foreach (string item in basketItems)
+            {
+                string[] components = item.Split(',');
+                string itemName = components[0];
+                int quantity = int.Parse(components[4]);
+                decimal itemPrice = decimal.Parse(components[1]);
+                decimal subtotal = itemPrice * quantity;
+
+                totalPrice += subtotal;
+
+                itemsText += $"{itemName} - Quantity: {quantity}\n";
+            }
+
+            // Set the font size and style for the heading
+            listText.Font = new Font("Arial", 16, FontStyle.Bold);
+
+            // Set the text for the heading
+            listText.Text = headingText;
+
+            // Create a separate label for the basket items
+            Label itemsLabel = new Label();
+            itemsLabel.Text = itemsText;
+
+            // Set the font size and style for the basket items
+            itemsLabel.Font = new Font("Arial", 10, FontStyle.Regular);
+            itemsLabel.ForeColor = Color.Blue;
+
+            // Add the items label below the heading
+            itemsLabel.Location = new Point(listText.Left, listText.Bottom);
+            itemsLabel.AutoSize = true;
+
+            // Add the items label to the form's controls
+            Controls.Add(itemsLabel);
+
+            // Create a label for the total price
+            Label totalPriceLabel = new Label();
+            totalPriceLabel.Text = $"Total Price: £{totalPrice:F2}"; // Format the total price with two decimal places
+            totalPriceLabel.Font = new Font("Arial", 12, FontStyle.Bold);
+            totalPriceLabel.ForeColor = Color.Red;
+
+            // Set the location of the total price label below the basket items label
+            totalPriceLabel.Location = new Point(itemsLabel.Left, itemsLabel.Bottom + 10);
+            totalPriceLabel.AutoSize = true;
+
+            // Add the total price label to the form's controls
+            Controls.Add(totalPriceLabel);
+
+            // Bring both labels to the front
+            listText.BringToFront();
+            itemsLabel.BringToFront();
+            totalPriceLabel.BringToFront();
+            shopPnl.BringToFront();
+        }
+
+
 
         // Method to remove item from basket
         private void RemoveItemFromBasket(string itemDetails)
@@ -259,6 +330,8 @@ namespace Route_Finder
 
                 // Write the updated list back to the Basket.csv file
                 File.WriteAllLines(basketFilePath, lines);
+                // Update the listText label with basket items
+                UpdateListText(lines);
 
                 MessageBox.Show($"Selected item '{itemName}' removed from basket.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -320,6 +393,7 @@ namespace Route_Finder
                     {
                         Text = "+",
                         ForeColor = Color.Black,
+                        BackColor = Color.ForestGreen,
                         FlatStyle = FlatStyle.Popup,
                         Font = new Font("Arial", 10, FontStyle.Regular),
                         Size = new Size(30, 20),
@@ -334,6 +408,7 @@ namespace Route_Finder
                     {
                         Text = "-",
                         ForeColor = Color.Black,
+                        BackColor = Color.Crimson,
                         FlatStyle = FlatStyle.Popup,
                         Font = new Font("Arial", 10, FontStyle.Regular),
                         Size = new Size(30, 20),
