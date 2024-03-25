@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.CompilerServices;
@@ -273,6 +273,9 @@ namespace Route_Finder
             itemsLabel.BringToFront();
             totalPriceLabel.BringToFront();
             shopPnl.BringToFront();
+            searchShop.BringToFront();
+            searchBtn.BringToFront();
+            shopText.BringToFront();
         }
 
 
