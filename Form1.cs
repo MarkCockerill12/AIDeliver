@@ -125,6 +125,149 @@ namespace Route_Finder
             }
         }
 
+        // Event handler for add button click
+        private void AddButton_Click(object sender, EventArgs e)
+        {
+            Button addButton = (Button)sender;
+            string itemDetails = addButton.Tag.ToString(); // Get item details from Tag property
+            AddItemToBasket(itemDetails);
+        }
+
+        // Event handler for remove button click
+        private void RemoveButton_Click(object sender, EventArgs e)
+        {
+            Button removeButton = (Button)sender;
+            string itemDetails = removeButton.Tag.ToString(); // Get item details from Tag property
+            RemoveItemFromBasket(itemDetails);
+        }
+
+        // Method to add item to basket
+        // Method to add item to basket
+        private void AddItemToBasket(string itemDetails)
+        {
+            // Define the path for the Basket.csv file
+            string basketFilePath = @"C:\Users\bossu\OneDrive\Desktop\Uni\sem2\New folder\AI_Delivery\Basket.csv";
+
+            try
+            {
+                // Split the item details
+                string[] components = itemDetails.Split(',');
+
+                // Extract the item name, price, quantity, and weight
+                string itemName = components[0];
+                string itemPrice = components[1];
+                string itemQuantity = components[2];
+                string itemWeight = components[3];
+                int itemCount = 1; // Default count for a new item
+
+                // Check if the item already exists in the basket
+                bool itemExists = false;
+
+                // Read all lines from the Basket.csv file
+                List<string> lines = File.ReadAllLines(basketFilePath).ToList();
+
+                for (int i = 0; i < lines.Count; i++)
+                {
+                    string line = lines[i];
+                    string[] lineComponents = line.Split(',');
+
+                    if (lineComponents[0] == itemName)
+                    {
+                        // Update the itemCount
+                        int currentItemCount = int.Parse(lineComponents[4]);
+                        currentItemCount++;
+                        itemCount = currentItemCount; // Update itemCount with the new count
+
+                        // Reconstruct the line with updated item count
+                        lines[i] = $"{itemName},{itemPrice},{itemQuantity},{itemWeight},{itemCount}";
+                        itemExists = true;
+                        break;
+                    }
+                }
+
+                if (!itemExists)
+                {
+                    // Add the item to the basket with quantity 1
+                    string newItem = $"{itemName},{itemPrice},{itemQuantity},{itemWeight},{itemCount}";
+                    lines.Add(newItem);
+                }
+
+                // Write the updated list back to the Basket.csv file
+                File.WriteAllLines(basketFilePath, lines);
+
+                MessageBox.Show($"Selected item '{itemName}' added to basket.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error occurred while adding item to basket: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // Method to remove item from basket
+        private void RemoveItemFromBasket(string itemDetails)
+        {
+            // Define the path for the Basket.csv file
+            string basketFilePath = @"C:\Users\bossu\OneDrive\Desktop\Uni\sem2\New folder\AI_Delivery\Basket.csv";
+
+            try
+            {
+                // Split the item details
+                string[] components = itemDetails.Split(',');
+
+                // Extract the item name
+                string itemName = components[0];
+
+                // Read all lines from the Basket.csv file
+                List<string> lines = File.ReadAllLines(basketFilePath).ToList();
+
+                // Flag to check if the item was found in the basket
+                bool itemFound = false;
+
+                // Find and remove the selected item from the list
+                for (int i = 0; i < lines.Count; i++)
+                {
+                    string[] lineComponents = lines[i].Split(',');
+
+                    if (lineComponents[0] == itemName)
+                    {
+                        // Update the item count
+                        int currentCount = int.Parse(lineComponents[4]);
+                        currentCount--;
+
+                        if (currentCount <= 0)
+                        {
+                            // Remove the item if count is 0 or less
+                            lines.RemoveAt(i);
+                        }
+                        else
+                        {
+                            // Update the count in the line
+                            lineComponents[4] = currentCount.ToString();
+                            lines[i] = string.Join(",", lineComponents);
+                        }
+
+                        itemFound = true;
+                        break;
+                    }
+                }
+
+                if (!itemFound)
+                {
+                    MessageBox.Show($"There is no '{itemName}' in the basket to remove.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Write the updated list back to the Basket.csv file
+                File.WriteAllLines(basketFilePath, lines);
+
+                MessageBox.Show($"Selected item '{itemName}' removed from basket.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error occurred while removing item from basket: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         private void searchBtn_Click(object sender, EventArgs e)
         {
             string searchTerm = searchShop.Text.Trim().ToLower(); // Trim whitespace and convert to lowercase
@@ -139,78 +282,84 @@ namespace Route_Finder
             // Read all lines from the CSV file
             string[] lines = File.ReadAllLines(csvFilePath);
 
-            // Filter items that match the search term based on the item's name
-            var matchingItems = lines.Where(line => line.Split(',')[0].ToLower().Contains(searchTerm));
+            // Clear the existing items from the shop panel
+            shopPnl.Controls.Clear();
+
+            // Create a list to hold selected items
+            List<string> selectedItems = new List<string>();
+
+            // Calculate the starting Y-coordinate for displaying items
+            int startY = searchShop.Bottom + 30;
 
             // Display the matching items
-            if (matchingItems.Any())
+            foreach (string line in lines)
             {
-                // Format and display each matching item
-                List<string> formattedItems = new List<string>();
-                foreach (string item in matchingItems)
+                string[] components = line.Split(','); // Split the line into components
+
+                // Ensure there are at least four components (name, price, quantity, weight)
+                if (components.Length >= 4 && components[0].ToLower().Contains(searchTerm))
                 {
-                    string[] components = item.Split(','); // Split the line into components
+                    // Format the item for display
+                    string formattedItem = $"{components[0]}, £{components[1]}, {components[2]}, {components[3]} kg";
 
-                    // Ensure there are at least four components (name, price, quantity, weight)
-                    if (components.Length >= 4)
+                    // Create label for displaying the item
+                    Label itemLabel = new Label
                     {
-                        string formattedItem = $"{components[0]}, £{components[1]}, {components[2]}, {components[3]} kg"; // Format price and weight
-                        formattedItems.Add(formattedItem);
-                    }
+                        Text = formattedItem,
+                        ForeColor = Color.White,
+                        BackColor = Color.DodgerBlue,
+                        Font = new Font("Arial", 12, FontStyle.Regular),
+                        BorderStyle = BorderStyle.FixedSingle,
+                        AutoSize = true,
+                        Location = new Point(20, startY) // Set Y-coordinate relative to the search bar
+                    };
+                    shopPnl.Controls.Add(itemLabel);
+
+                    // Create add button for adding item to basket
+                    Button addButton = new Button
+                    {
+                        Text = "+",
+                        ForeColor = Color.Black,
+                        FlatStyle = FlatStyle.Popup,
+                        Font = new Font("Arial", 10, FontStyle.Regular),
+                        Size = new Size(30, 20),
+                        Location = new Point(itemLabel.Right + 10, itemLabel.Top), // Align with right side of label
+                        Tag = line // Store item details in Tag property
+                    };
+                    addButton.Click += AddButton_Click; // Attach click event handler
+                    shopPnl.Controls.Add(addButton);
+
+                    // Create remove button for removing item from basket
+                    Button removeButton = new Button
+                    {
+                        Text = "-",
+                        ForeColor = Color.Black,
+                        FlatStyle = FlatStyle.Popup,
+                        Font = new Font("Arial", 10, FontStyle.Regular),
+                        Size = new Size(30, 20),
+                        Location = new Point(addButton.Right + 10, itemLabel.Top), // Align with right side of add button
+                        Tag = line // Store item details in Tag property
+                    };
+                    removeButton.Click += RemoveButton_Click; // Attach click event handler
+                    shopPnl.Controls.Add(removeButton);
+
+                    // Add a separator
+                    Panel separator = new Panel
+                    {
+                        BackColor = Color.Gray,
+                        Size = new Size(shopPnl.Width - 40, 1),
+                        Location = new Point(20, itemLabel.Bottom + 5) // Adjust Y position below item label
+                    };
+                    shopPnl.Controls.Add(separator);
+
+                    // Add formatted item to selected items list
+                    selectedItems.Add(formattedItem);
+
+                    // Increment startY for the next item
+                    startY = separator.Bottom + 5;
                 }
-
-                // Join the formatted items with newline characters
-                string formattedText = string.Join(Environment.NewLine, formattedItems);
-
-                // Set the formatted text to the listText label
-                listText.Text = formattedText;
-
-
-
-                // Adjust the position and size of the listText label
-                listText.Size = new Size(shopPnl.Width - 20, shopPnl.Height - 120); // Adjust size to fit within the panel
-                listText.Location = new Point(20, 150); // Adjust position underneath the search bar
-
-                // Add the listText label to the shopPnl panel
-                shopPnl.Controls.Add(listText);
-                listText.BringToFront();
-
-                // Make the listText label visible
-                listText.Visible = true;
-            }
-            else
-            {
-                listText.Text = "No matching items found.";
-                listText.Visible = false; // Hide the listText label if there are no matching items
             }
         }
-
-        /* public static bool FileContainsString(string path, string str, bool caseSensitive = true)
-         {
-             if (String.IsNullOrEmpty(str))
-                 return false;
-
-             using (var stream = new StreamReader(path))
-                 while (!stream.EndOfStream)
-                 {
-                     bool stringFound = true;
-                     for (int i = 0; i < str.Length; i++)
-                     {
-                         char strChar = caseSensitive ? str[i] : Char.ToUpperInvariant(str[i]);
-                         char fileChar = caseSensitive ? (char)stream.Read() : Char.ToUpperInvariant((char)stream.Read());
-                         if (strChar != fileChar)
-                         {
-                             stringFound = false;
-                             break; // break for-loop, start again with first character at next position
-                         }
-                     }
-                     if (stringFound)
-                         return true;
-                 }
-             return false;
-         }*/
-
-
 
         private void Timer_Tick(object sender, EventArgs e)
         {
