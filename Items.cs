@@ -38,6 +38,10 @@ namespace Route_Finder
             return deliveryLocation;
         }
 
+        public void loadItems()
+        {
+
+        }
 
     }
 }

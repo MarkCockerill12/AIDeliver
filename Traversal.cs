@@ -12,6 +12,7 @@ namespace Route_Finder
         private PointsCreation p = new PointsCreation();
         private Van van = new Van();
 
+
         public Traversal() { }
         
 
@@ -22,7 +23,7 @@ namespace Route_Finder
         }
 
 
-        public void findDeliveryLocation(int x, int y)
+        public Node findDeliveryLocation(int x, int y)
         {
             int index = 0;
             for (int i = 0; i < x; i++)
@@ -34,6 +35,13 @@ namespace Route_Finder
             }
 
             Node targetNode = p.getNode(index);
+
+            return targetNode;
+        }
+
+        public void bfs(Node root, Node target)
+        {
+            BFS breadthFirstSeatch = new BFS(root, target);
         }
 
     }
