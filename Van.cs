@@ -33,6 +33,33 @@ namespace Route_Finder
             this.items.Add(items);
         }
 
+        public void loadItems()
+        {
+            string[] lines = System.IO.File.ReadAllLines("DeliveryItems.csv");
+            items = new List<Items>();
+            for (int i = 1; i < lines.Length; i++)
+            {
+                string[] values = lines[i].Split(',');
+                Items item = new Items();
+
+                for (int index = 0; index < values.Length; index++)
+                {
+                    Item itm = new Item();
+                    string v = values[index];
+
+                    itm.setName(v);
+                    index++;
+                    itm.setWeight(float.Parse(v));
+                    index++;
+                    itm.setQuantity(int.Parse(v));
+
+                    item.addToItems(itm);
+                }
+
+                items.Add(item);
+            }
+        }
+
         public void extendTargetNode(Node targetNode)
         {
             targetNodes.Add(targetNode);
