@@ -680,7 +680,7 @@ namespace Route_Finder
         private void displayAddress()
         {
             // Assuming t is an instance of Traversal class
-            nodes = t.getNodes(); // Modify this method call based on your implementation
+            nodes = traversal.getNodes(); // Modify this method call based on your implementation
 
             // Create a ListBox to display the addresses
             listBox = new ListBox
