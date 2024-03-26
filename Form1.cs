@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Linq;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Header;
+using System.Text;
 
 //sources
 //read from file- https://www.c-sharpcorner.com/UploadFile/mahesh/how-to-read-a-text-file-in-C-Sharp/#:~:text=The%20File%20class%20provides%20two,text%20file%20into%20a%20string.
@@ -34,6 +35,7 @@ namespace Route_Finder
         private int currentState = 1;
         private Button stateBtn;
         private Button routeBtn;
+        private Traversal t = new Traversal();
 
         Label totalPriceLabel = new Label();
         Label itemsLabel = new Label();
@@ -51,26 +53,20 @@ namespace Route_Finder
             timer.Interval = 1;
             timer.Tick += Timer_Tick;
 
-            drawMap();
+            displayAddress();
         }
 
         private void setupDisplay()
         {
             // create a colored block for the info 
-            infoPnl = new Panel { BackColor = Color.DarkBlue, Dock = DockStyle.Bottom, Height = 200, Width = 900 };
+            infoPnl = new Panel { BackColor = Color.DarkBlue, Dock = DockStyle.Bottom, Height = 195, Width = 900 };
             Controls.Add(infoPnl);
             infoPnl.SendToBack();
 
             // create a colored block for the List    
-            listPnl = new Panel { BackColor = Color.Black, Dock = DockStyle.Right, Height = 600, Width = 900 / 3 };
+            listPnl = new Panel { BackColor = Color.Black, Dock = DockStyle.Right, Height = 600, Width = 300 };
             Controls.Add(listPnl);
             listPnl.SendToBack();
-
-            //add text
-            mapText = new Label { Text = "addresses go here", ForeColor = Color.White, BackColor = Color.DodgerBlue, Font = new Font("Arial", 20, FontStyle.Regular), BorderStyle = BorderStyle.None, AutoSize = true };
-            mapText.Location = new Point((900 - mapText.Width) / 4, (600 - mapText.Height) / 4);
-            Controls.Add(mapText);
-            mapText.BringToFront();
 
             //add text
             listText = new Label { Text = "list goes here", ForeColor = Color.White, BackColor = Color.DodgerBlue, Font = new Font("Arial", 20, FontStyle.Regular), BorderStyle = BorderStyle.None, AutoSize = true, AutoEllipsis = false, MaximumSize = new Size(400, 900), Location = new Point(625, 10) };
@@ -78,7 +74,7 @@ namespace Route_Finder
             listText.BringToFront();
 
             //add text
-            infoText = new Label { Text = "info goes here", ForeColor = Color.White, BackColor = Color.DodgerBlue, Font = new Font("Arial", 20, FontStyle.Regular), BorderStyle = BorderStyle.None, AutoSize = true, AutoEllipsis = false, MaximumSize = new Size(400, 900), Location = new Point(10, 420) };
+            infoText = new Label { Text = "info goes here", ForeColor = Color.White, BackColor = Color.DodgerBlue, Font = new Font("Arial", 20, FontStyle.Regular), BorderStyle = BorderStyle.None, AutoSize = true, AutoEllipsis = false, Location = new Point(10, 380) };
             Controls.Add(infoText);
             infoText.BringToFront();
 
@@ -114,16 +110,88 @@ namespace Route_Finder
             switch (currentState)
             {
                 case 1:
+
                     MessageBox.Show("This will be the A*");
-                    //Astar_search();
+                    // Send the two nodes to the GBF algorithm
+                    if (listBox.SelectedItems.Count == 2)
+                    {
+                        // Get the indices of the selected nodes
+                        int index1 = listBox.SelectedIndices[0];
+                        int index2 = listBox.SelectedIndices[1];
+
+                        // Get the selected nodes
+                        Node node1 = nodes[index1];
+                        Node node2 = nodes[index2];
+
+                        // Call the BFS algorithm with the selected nodes
+                        /* bool routeSuccess = Astar_search(node1, node2); travers.Astar(whatever bits);
+
+                         // Display the result
+                         if (routeSuccess)
+                             Console.WriteLine("Route successful");
+                         else
+                             Console.WriteLine("Route failed");*/
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please select exactly two nodes for A* route finding.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+
                     break;
                 case 2:
-                    MessageBox.Show("This will be the BFS");
-                    //BFS_search();
+
+                    // Send the two nodes to the BFS algorithm
+                    if (listBox.SelectedItems.Count == 2)
+                    {
+                        // Get the indices of the selected nodes
+                        int index1 = listBox.SelectedIndices[0];
+                        int index2 = listBox.SelectedIndices[1];
+
+                        // Get the selected nodes
+                        Node node1 = nodes[index1];
+                        Node node2 = nodes[index2];
+
+                        // Call the BFS algorithm with the selected nodes
+                       /* bool routeSuccess = BFS_search(node1, node2); travers.BFS(whatever bits);
+
+                        // Display the result
+                        if (routeSuccess)
+                            Console.WriteLine("Route successful");
+                        else
+                            Console.WriteLine("Route failed");*/
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please select exactly two nodes for BFS route finding.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                     break;
                 case 3:
-                    MessageBox.Show("This will be the GBF");
-                    //GBF_search();
+
+                    // Send the two nodes to the GBF algorithm
+                    if (listBox.SelectedItems.Count == 2)
+                    {
+                        // Get the indices of the selected nodes
+                        int index1 = listBox.SelectedIndices[0];
+                        int index2 = listBox.SelectedIndices[1];
+
+                        // Get the selected nodes
+                        Node node1 = nodes[index1];
+                        Node node2 = nodes[index2];
+
+                        // Call the BFS algorithm with the selected nodes
+                        /* bool routeSuccess = GBF_search(node1, node2); travers.GBF(whatever bits);
+
+                         // Display the result
+                         if (routeSuccess)
+                             Console.WriteLine("Route successful");
+                         else
+                             Console.WriteLine("Route failed");*/
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please select exactly two nodes for GBF route finding.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    
                     break;
                 default:
                     break;
@@ -163,11 +231,6 @@ namespace Route_Finder
             searchBtn = new Button { Text = "🔎", ForeColor = Color.Black, FlatStyle = FlatStyle.Popup, Font = new Font("Arial", 15, FontStyle.Regular), Location = new Point(((900 / 4) + 350), 60), Size = new Size(40, 40), BackColor = Color.White, Visible = false };
             searchBtn.Click += new EventHandler(this.searchBtn_Click);
             Controls.Add(this.searchBtn);
-
-            /*
-                        //add text
-                        shopText = new Label { Text = "Shop results", ForeColor = Color.White, BackColor = Color.DodgerBlue, Font = new Font("Arial", 20, FontStyle.Regular), BorderStyle = BorderStyle.None, AutoSize = true, AutoEllipsis = false, MaximumSize = new Size(400, 900), Location = new Point(900 / 4, 110), Visible = false };
-                        Controls.Add(shopText);*/
 
             // Panel to contain shop items with scrolling
             Panel shopItemsPanel = new Panel();
@@ -373,7 +436,6 @@ namespace Route_Finder
             shopPnl.BringToFront();
             searchShop.BringToFront();
             searchBtn.BringToFront();
-            shopText.BringToFront();
 
         }
 
@@ -579,7 +641,7 @@ namespace Route_Finder
                 {
                     searchShop.Visible = false;
                     searchBtn.Visible = false;
-                    //shopText.Visible = false;
+                
 
                     if (shopPnl.Top < (600 - shopPnl.Height) / 2)
                     {
@@ -596,264 +658,105 @@ namespace Route_Finder
             }
         }
 
-        private void drawMap()
+        private ListBox listBox;
+        private List<Node> nodes; // Assuming this is accessible in the class
+
+        private void displayAddress()
         {
+            // Assuming t is an instance of Traversal class
+            nodes = t.getNodes(); // Modify this method call based on your implementation
 
-        }
-
-
-
-
-
-
-
-
-
-
-
-       /* private void Astar_search()
-        {
-            List<Node> nodes = ReadNodesFromFile("Nodes.txt");
-
-            // Assuming you have start and goal nodes
-            Node startNode = GetNodeById(nodes, startNodeId); // Replace startNodeId with the actual ID of the start node
-            Node goalNode = GetNodeById(nodes, goalNodeId); // Replace goalNodeId with the actual ID of the goal node
-
-            if (startNode != null && goalNode != null)
+            // Create a ListBox to display the addresses
+            listBox = new ListBox
             {
-                // Perform A* search algorithm
-                List<Node> path = AStar(startNode, goalNode);
-                if (path != null)
-                {
-                    // Path found, do something with it
-                    foreach (Node node in path)
-                    {
-                        Console.WriteLine(node.ID);
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("No path found!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            }
-            else
-            {
-                MessageBox.Show("Start or goal node not found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
+                Font = new Font("Arial", 10, FontStyle.Regular),
+                BorderStyle = BorderStyle.FixedSingle,
+                Size = new Size(585, 370), // Adjust the size as needed
+                Location = new Point(0, 0), // Adjust the location as needed
+                SelectionMode = SelectionMode.MultiExtended // Allow multiple selections
+            };
 
-        private List<Node> AStar(Node start, Node goal)
-        {
-            // Implementation of the A* algorithm
-            HashSet<Node> closedSet = new HashSet<Node>();
-            HashSet<Node> openSet = new HashSet<Node> { start };
-            Dictionary<Node, Node> cameFrom = new Dictionary<Node, Node>();
-            Dictionary<Node, int> gScore = new Dictionary<Node, int>();
-            Dictionary<Node, int> fScore = new Dictionary<Node, int>();
-
+            // Add each coordinate to the ListBox
             foreach (Node node in nodes)
             {
-                gScore[node] = int.MaxValue;
-                fScore[node] = int.MaxValue;
+                listBox.Items.Add($"  Address: {node.getX()}, {node.getY()}");
             }
 
-            gScore[start] = 0;
-            fScore[start] = HeuristicCostEstimate(start, goal);
+            // Allow the ListBox to automatically scroll
+            listBox.ScrollAlwaysVisible = true;
 
-            while (openSet.Count > 0)
-            {
-                Node current = openSet.OrderBy(node => fScore[node]).First();
+            // Add double-click event handler for selecting addresses
+            listBox.DoubleClick += ListBox_DoubleClick;
 
-                if (current == goal)
-                {
-                    return ReconstructPath(cameFrom, current);
-                }
-
-                openSet.Remove(current);
-                closedSet.Add(current);
-
-                foreach (var neighbor in current.Neighbors)
-                {
-                    Node neighborNode = neighbor.Key;
-                    int tentativeGScore = gScore[current] + neighbor.Value;
-
-                    if (tentativeGScore < gScore[neighborNode])
-                    {
-                        cameFrom[neighborNode] = current;
-                        gScore[neighborNode] = tentativeGScore;
-                        fScore[neighborNode] = gScore[neighborNode] + HeuristicCostEstimate(neighborNode, goal);
-
-                        if (!openSet.Contains(neighborNode))
-                        {
-                            openSet.Add(neighborNode);
-                        }
-                    }
-                }
-            }
-
-            return null; // No path found
+            // Add the ListBox to the form's controls
+            Controls.Add(listBox);
         }
 
-        private int HeuristicCostEstimate(Node node, Node goal)
+        // Event handler for double-clicking on addresses
+        private void ListBox_DoubleClick(object sender, EventArgs e)
         {
-            // Example of heuristic function (Euclidean distance)
-            return (int)Math.Sqrt(Math.Pow(goal.ID - node.ID, 2));
-        }
+            // Get the selected address
+            string selectedAddress = listBox.SelectedItem.ToString();
 
-        private List<Node> ReconstructPath(Dictionary<Node, Node> cameFrom, Node current)
-        {
-            List<Node> totalPath = new List<Node> { current };
-            while (cameFrom.ContainsKey(current))
+            // Extract the coordinates from the selected address
+            string[] parts = selectedAddress.Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length == 2)
             {
-                current = cameFrom[current];
-                totalPath.Insert(0, current);
-            }
-            return totalPath;
-        }
-
-        private Node GetNodeById(List<Node> nodes, int id)
-        {
-            foreach (Node node in nodes)
-            {
-                if (node.ID == id)
-                {
-                    return node;
-                }
-            }
-            return null;
-        }
-
-        private List<Node> ReadNodesFromFile(string filePath)
-        {
-            List<Node> nodes = new List<Node>();
-
-            try
-            {
-                string[] lines = File.ReadAllLines(filePath);
-                foreach (string line in lines)
-                {
-                    string[] parts = line.Split(',');
-                    int nodeId = int.Parse(parts[0]);
-                    Node node = new Node(nodeId);
-
-                    for (int i = 1; i < parts.Length; i++)
-                    {
-                        string[] neighborInfo = parts[i].Split(':');
-                        int neighborId = int.Parse(neighborInfo[0]);
-                        int cost = int.Parse(neighborInfo[1]);
-
-                        Node neighbor = GetNodeById(nodes, neighborId);
-                        if (neighbor != null)
-                        {
-                            node.Neighbors.Add(neighbor, cost);
-                        }
-                        else
-                        {
-                            MessageBox.Show($"Neighbor node with ID {neighborId} not found for node {nodeId}.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                    }
-
-                    nodes.Add(node);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error occurred while reading nodes from file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-            return nodes;
-        }*/
-
-
-
-
-
-
-
-
-
-        /*private void BFS_search()
-        {
-            // Assuming you have a file named "Nodes.txt" containing node information,
-            // you can read the nodes from the file and then perform the BFS search algorithm.
-            
-            List<Node> nodes = ReadNodesFromFile("Nodes.txt");
-
-            // Perform BFS search algorithm
-            Queue<Node> queue = new Queue<Node>();
-            HashSet<Node> visited = new HashSet<Node>();
-
-            // Start BFS from the first node
-            Node startNode = nodes[0];
-            queue.Enqueue(startNode);
-            visited.Add(startNode);
-
-            while (queue.Count > 0)
-            {
-                Node currentNode = queue.Dequeue();
-
-                // Process current node here...
-
-                foreach (var neighbor in currentNode.Neighbors.Keys)
-                {
-                    if (!visited.Contains(neighbor))
-                    {
-                        queue.Enqueue(neighbor);
-                        visited.Add(neighbor);
-                    }
-                }
-            }
-        }*/
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-        private void GBF_search()
-        {
-            List<Node> nodes = ReadNodesFromFile("Nodes.txt");
-
-            // Perform GBF search algorithm
-            PriorityQueue<Node> priorityQueue = new PriorityQueue<Node>();
-            HashSet<Node> visited = new HashSet<Node>();
-
-            // Start GBF from the first node
-            Node startNode = nodes[0];
-            priorityQueue.Enqueue(startNode, HeuristicFunction(startNode)); // Enqueue with heuristic value
-            visited.Add(startNode);
-
-            while (priorityQueue.Count > 0)
-            {
-                Node currentNode = priorityQueue.Dequeue().Item;
-
-                // Process current node here...
-
-                foreach (var neighbor in currentNode.Neighbors.Keys)
-                {
-                    if (!visited.Contains(neighbor))
-                    {
-                        priorityQueue.Enqueue(neighbor, HeuristicFunction(neighbor)); // Enqueue with heuristic value
-                        visited.Add(neighbor);
-                    }
-                }
+                string coordinates = parts[1];
+                // Add the selected address to the route
+                UpdateInfo(new List<string> { coordinates });
             }
         }
 
-        private int HeuristicFunction(Node node)
+
+
+
+        // Method to update the info section with selected addresses
+        private void UpdateInfo(List<string> selectedAddresses = null)
         {
-            // Define your heuristic function here
-            // This function should estimate the cost from the current node to the goal node
-            // The returned value represents the estimated cost (lower values indicate closer proximity to the goal)
-            return 0; // Placeholder heuristic function; replace with your actual heuristic
-        }*/
+            // If selectedAddresses is null, initialize it as an empty list
+            if (selectedAddresses == null)
+            {
+                selectedAddresses = new List<string>();
+            }
+
+            // Check if node 0,0 is already present in the selected addresses
+            bool hasDeliveryCenter = selectedAddresses.Any(address => address.StartsWith("Delivery Center: 0, 0"));
+
+            // If not present, add node 0,0 to the selected addresses
+            if (!hasDeliveryCenter)
+            {
+                selectedAddresses.Insert(0, "Delivery Center: 0, 0");
+            }
+
+            // Print the selected addresses to the console
+            Console.WriteLine("Selected Addresses:");
+            foreach (string address in selectedAddresses)
+            {
+                Console.WriteLine(address);
+                // Add the address to the route text
+                AddToRoute(address);
+            }
+        }
+
+        // Method to add an address to the route
+        private void AddToRoute(string address)
+        {
+            // Get the existing route text
+            string existingRoute = infoText.Text;
+
+            // If there are existing addresses, add a newline separator
+            if (!string.IsNullOrEmpty(existingRoute))
+            {
+                existingRoute += "\n";
+            }
+
+            // Append the new address to the existing route text
+            existingRoute += address;
+
+            // Update the route text
+            infoText.Text = existingRoute;
+        }
 
     }
 
