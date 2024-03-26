@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Route_Finder
 {
@@ -9,6 +10,7 @@ namespace Route_Finder
         private Dictionary<Node, int> connections = new Dictionary<Node, int>();
         private int x, y;
         private bool explored = false;
+        public int priority = 0;
 
         public Node(int x, int y, int height)
         {
