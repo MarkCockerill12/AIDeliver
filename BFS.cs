@@ -11,21 +11,18 @@ namespace Route_Finder
     internal class BFS
     {
         private Queue<Node> queue = new Queue<Node> ();
+        Dictionary<Node, Node> cameFrom = new Dictionary<Node, Node>();
+
         private Node target = null;
         private int distance;
 
-        public BFS(Node root, Node target)
+        public BFS()
         {
             distance = 0;
-            this.target = target;
-            queue.Enqueue(root);
-            search();
         }
 
         private Node searchNode()
         {
-
-
             while (queue.Count > 0)
             {
                 Node node = queue.Dequeue();
@@ -38,6 +35,7 @@ namespace Route_Finder
 
                     if (!n.isExplored())
                     {
+
                         queue.Enqueue(n);
                         n.SetExplor();
                         Console.WriteLine(n.getStringCoOrd());
@@ -48,8 +46,10 @@ namespace Route_Finder
             return null;
         }
 
-        public void search()
+        public void search(Node root, Node target)
         {
+            this.target = target;
+            queue.Enqueue(root);
             searchNode();
         }
     }

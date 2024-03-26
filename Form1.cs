@@ -35,7 +35,10 @@ namespace Route_Finder
         private int currentState = 1;
         private Button stateBtn;
         private Button routeBtn;
-        private Traversal t = new Traversal();
+        private Traversal traversal = new Traversal();
+
+
+
 
         Label totalPriceLabel = new Label();
         Label itemsLabel = new Label();
@@ -668,6 +671,8 @@ namespace Route_Finder
                 }
             }
         }
+
+
 
         private ListBox listBox;
         private List<Node> nodes; // Assuming this is accessible in the class

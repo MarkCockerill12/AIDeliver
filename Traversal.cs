@@ -10,10 +10,12 @@ namespace Route_Finder
     internal class Traversal
     {
         private PointsCreation p = new PointsCreation();
+
+        private Greedy g = new Greedy();
+        private BFS b = new BFS();
+        private AStar a = new AStar();
         private Van van = new Van();
 
-
-        public Traversal() { }
         
 
         public void addDelivery(Node targetNode, Items items)
@@ -41,7 +43,33 @@ namespace Route_Finder
 
         public void bfs(Node root, Node target)
         {
-            BFS breadthFirstSeatch = new BFS(root, target);
+            b.search(root, target);
+        }
+
+        public void aStar()
+        {
+
+        }
+
+        public void greedy()
+        {
+
+        }
+
+       
+
+        public List<Node> getNodes()
+        {
+            return p.getAllNodes();
+        }
+        public Node getNode(int index)
+        {
+            return p.getNode(index);
+        }
+
+        public int getLengthNodes()
+        {
+            return p.getNumberOfNodes();
         }
 
     }

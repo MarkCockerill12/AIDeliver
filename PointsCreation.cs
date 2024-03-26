@@ -48,7 +48,7 @@ namespace Route_Finder
                 {
                 try
                     {
-                    p.setAllConnections(points[val[i, index]], 5);
+                    p.setAllConnections(points[val[i, index]], 1);
                     }
                     catch (Exception e) {
                         Console.WriteLine(e);
