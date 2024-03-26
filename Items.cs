@@ -40,7 +40,19 @@ namespace Route_Finder
 
         public void loadItems()
         {
-
+            // Read from ItemList.csv
+            string[] lines = System.IO.File.ReadAllLines("ItemList.csv");
+            items = new List<Item>();
+            for (int i = 1; i < ItemList.csv; i++)
+            {
+                string[] values = lines[i].Split(',');
+                Item item = new Item();
+                item.setName(values[0]);
+                item.setWeight(float.Parse(values[1]));
+                item.setCost(float.Parse(values[2]));
+                item.setQuantity(int.Parse(values[3]));
+                items.Add(item);
+            }
         }
 
     }

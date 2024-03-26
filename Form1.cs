@@ -283,6 +283,17 @@ namespace Route_Finder
             }
         }
 
+        private void commitToBasket()
+        {
+            string[] lines = System.IO.File.ReadAllLines("Basket.csv");
+            List<string> basketItems = new List<string>();
+            foreach (string line in lines)
+            {
+                basketItems.Add(line);
+            }
+        }
+
+
 
 
 
