@@ -736,8 +736,12 @@ namespace Route_Finder
             // Add each coordinate to the ListBox
             foreach (Node node in nodes)
             {
-                listBox.Items.Add($"Address: {node.getX()}, {node.getY()}");
+                if (node.getX() != 0 || node.getY() != 0)
+                {
+                    listBox.Items.Add($"Address: {node.getX()}, {node.getY()}");
+                }
             }
+
 
             // Allow the ListBox to automatically scroll
             listBox.ScrollAlwaysVisible = true;
