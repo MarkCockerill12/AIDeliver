@@ -31,11 +31,14 @@ namespace Route_Finder
         private bool isExpanding = false;
         private int expandStep = 10;
         private Button searchBtn;
-        private Label shopText;
+        private Label weightText;
         private int currentState = 1;
         private Button stateBtn;
         private Button routeBtn;
         private Traversal traversal = new Traversal();
+        private ListBox listBox;
+        private List<Node> nodes;
+        private Button PurchaseBaskt;
 
 
 
@@ -48,19 +51,18 @@ namespace Route_Finder
             InitializeComponent();
             setupDisplay();
             initialiseShop();
-            Node root = traversal.getNode(0);
-            Node target = traversal.getNode(10);
-            
-            traversal.aStar(root, target);
-            Console.WriteLine("*----------*");
-            traversal.bfs(root, target);
-            Console.WriteLine("*----------*");
-            traversal.greedy(root, target);
-
-
 
             this.BackColor = Color.DarkGray;
+
+            /*
+             * form styling
+             */
             this.Size = new Size(900, 600);
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.BackColor = ColorTranslator.FromHtml("#efefef");
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+
             timer = new Timer();
             timer.Interval = 1;
             timer.Tick += Timer_Tick;
@@ -76,28 +78,40 @@ namespace Route_Finder
             infoPnl.SendToBack();
 
             // create a colored block for the List    
-            listPnl = new Panel { BackColor = Color.Black, Dock = DockStyle.Right, Height = 600, Width = 300 };
+            string imagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images", "notePadImage.png");
+            listPnl = new Panel { BackColor = Color.Black, BackgroundImage = Image.FromFile(imagePath), Dock = DockStyle.Right, Height = 600, Width = 300 };
             Controls.Add(listPnl);
             listPnl.SendToBack();
 
-            //add text
-            listText = new Label { Text = "list goes here", ForeColor = Color.White, BackColor = Color.DodgerBlue, Font = new Font("Arial", 20, FontStyle.Regular), BorderStyle = BorderStyle.None, AutoSize = true, AutoEllipsis = false, MaximumSize = new Size(400, 900), Location = new Point(625, 10) };
+            //the label the beaskt content is fixed tooColor.FromArgb(239, 239, 239, 255)
+            listText = new Label { Text = "", ForeColor = Color.Black, BackColor = Color.Transparent, Font = new Font("Comic Sans MS", 10, FontStyle.Regular), BorderStyle = BorderStyle.None, AutoSize = true, AutoEllipsis = false, MaximumSize = new Size(410, 900), Location = new Point(637, 86) };
             Controls.Add(listText);
+            listText.Visible = false;
+            listText.BorderStyle = BorderStyle.Fixed3D;
             listText.BringToFront();
 
             //add text
-            infoText = new Label { Text = "info goes here", ForeColor = Color.White, BackColor = Color.DodgerBlue, Font = new Font("Arial", 20, FontStyle.Regular), BorderStyle = BorderStyle.None, AutoSize = true, AutoEllipsis = false, Location = new Point(10, 380) };
+            infoText = new Label { Text = "Route Info", ForeColor = Color.White, BackColor = Color.DodgerBlue, Font = new Font("Arial", 20, FontStyle.Regular), BorderStyle = BorderStyle.None, AutoSize = true, AutoEllipsis = false, Location = new Point(10, 375) };
+            infoText.BackColor = Color.DarkBlue;
+            infoText.Font = new Font(infoText.Font, FontStyle.Underline);
             Controls.Add(infoText);
             infoText.BringToFront();
 
+            //add text
+            weightText = new Label { Text = "Basket Weight", ForeColor = Color.White, BackColor = Color.DodgerBlue, Font = new Font("Arial", 20, FontStyle.Regular), BorderStyle = BorderStyle.None, AutoSize = true, AutoEllipsis = false, Location = new Point(280, 375) };
+            weightText.BackColor = Color.DarkBlue;
+            weightText.Font = new Font(weightText.Font, FontStyle.Underline);
+            Controls.Add(weightText);
+            weightText.BringToFront();
+
             // button 
-            expandBtn = new Button { Text = "+", ForeColor = Color.Black, FlatStyle = FlatStyle.Popup, Font = new Font("Arial", 15, FontStyle.Regular), Location = new Point(840, 10), Size = new Size(25, 25), BackColor = Color.Red };
+            expandBtn = new Button { Text = "Order From Us", ForeColor = Color.Black, FlatStyle = FlatStyle.Popup, Font = new Font("Arial", 15, FontStyle.Regular), Location = new Point(637, 15), Size = new Size(200, 30), BackColor = Color.Red };
             expandBtn.Click += new EventHandler(this.expandBtn_Click);
             Controls.Add(this.expandBtn);
             expandBtn.BringToFront();
 
             //pop up panel shopping
-            shopPnl = new Panel { BackColor = Color.Red, Location = new Point(40, 40), Height = (600 - (600 / 23)), Width = (900 - (900 / 20)), Visible = false, };
+            shopPnl = new Panel { BackColor = ColorTranslator.FromHtml("#00ff99"), Location = new Point(40, 40), Height = (600 - (600 / 23)), Width = (900 - (900 / 20)), Visible = false, };
             Controls.Add(shopPnl);
             shopPnl.BringToFront();
 
@@ -109,11 +123,38 @@ namespace Route_Finder
             stateBtn.BringToFront();
 
             // Algorithm state button
-            routeBtn = new Button { Location = new Point((900 - 900 / 3) - 220, 320), Font = new Font("Arial", 15, FontStyle.Regular), AutoSize = true, };
+            routeBtn = new Button { Location = new Point(370, 320), Font = new Font("Arial", 15, FontStyle.Regular), AutoSize = true, };
             routeBtn.Text = "Find Shortest Route";
+            routeBtn.BackColor = ColorTranslator.FromHtml("#1ac6ff");
             routeBtn.Click += RouteButton_Click; // Attach click event handler
             Controls.Add(routeBtn); // Add button to form
             routeBtn.BringToFront();
+
+
+            // button to buy basket
+            PurchaseBaskt = new Button { Location = new Point(790, 496), Size = new Size(20, 10), Font = new Font("Arial", 9, FontStyle.Regular), AutoSize = true, BackColor = Color.Green, };
+            PurchaseBaskt.Text = "Buy";
+
+            PurchaseBaskt.Click += PurchaseBaskt_Click; // Attach click event handler
+            PurchaseBaskt.Visible = false;
+            Controls.Add(PurchaseBaskt); // Add button to form
+            PurchaseBaskt.BringToFront();
+
+        }
+        private void PurchaseBaskt_Click(object sender, EventArgs e)
+        {
+            //clear the basket
+
+
+            //make the "" label invisible
+            listText.Visible = false;
+            PurchaseBaskt.Visible = false;
+            totalPriceLabel.Visible = false;
+
+            EmptyBasket();
+
+            MessageBox.Show("Purchase successful, your order will be in our next delivery!!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
         }
 
         private void RouteButton_Click(object sender, EventArgs e)
@@ -164,13 +205,13 @@ namespace Route_Finder
                         Node node2 = nodes[index2];
 
                         // Call the BFS algorithm with the selected nodes
-                       /* bool routeSuccess = BFS_search(node1, node2); travers.BFS(whatever bits);
+                        /* bool routeSuccess = BFS_search(node1, node2); travers.BFS(whatever bits);
 
-                        // Display the result
-                        if (routeSuccess)
-                            Console.WriteLine("Route successful");
-                        else
-                            Console.WriteLine("Route failed");*/
+                         // Display the result
+                         if (routeSuccess)
+                             Console.WriteLine("Route successful");
+                         else
+                             Console.WriteLine("Route failed");*/
                     }
                     else
                     {
@@ -203,7 +244,7 @@ namespace Route_Finder
                     {
                         MessageBox.Show("Please select exactly two nodes for GBF route finding.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
-                    
+
                     break;
                 default:
                     break;
@@ -252,7 +293,7 @@ namespace Route_Finder
             Controls.Add(shopItemsPanel);
 
             // Assign shopItemsPanel as the parent for displaying shop items
-            shopPnl = new Panel { BackColor = Color.Red, Location = new Point(40, 40), Height = (600 - (600 / 10)), Width = (900 - (900 / 10)), Visible = false, };
+            shopPnl = new Panel { BackColor = ColorTranslator.FromHtml("#00ff99"), Location = new Point(40, 20), Height = (600 - (600 / 10)), Width = (900 - (900 / 10)), Visible = false, };
             shopPnl.Controls.Add(shopItemsPanel); // Add shopItemsPanel as a child control of shopPnl
             Controls.Add(shopPnl);
             shopPnl.BringToFront();
@@ -264,16 +305,23 @@ namespace Route_Finder
             isExpanding = !isExpanding; // Toggle the state
             if (isExpanding)
             {
-                expandBtn.Text = "-";
+                expandBtn.Text = "See Basket";
+
+
+
+
                 shopPnl.Height = 0; // Set initial height to 0 before expanding
-                shopPnl.Location = new Point((900 - shopPnl.Width) / 2, (600 - shopPnl.Height) / 2); // Set initial position below the form
+                shopPnl.Location = new Point((900 - shopPnl.Width) / 2, (50 - shopPnl.Height) / 2); // Set initial position below the form
                 timer.Start();
                 shopPnl.Visible = true;
                 shopPnl.BringToFront(); // Bring the red pop-up panel to the front
+
+                listText.Text = "Basket Content:";
+
             }
             else
             {
-                expandBtn.Text = "+";
+                expandBtn.Text = "Order From Us";
                 timer.Start();
             }
         }
@@ -299,6 +347,10 @@ namespace Route_Finder
         {
             // Define the path for the Basket.csv file
             string basketFilePath = @"Basket.csv";
+
+            listText.Visible = true; //displaying basket content text
+            PurchaseBaskt.Visible = true; //dispaying the button to buy
+            totalPriceLabel.Visible = true; // when making multiple purchases the last visibility needs a counter
 
             try
             {
@@ -350,7 +402,6 @@ namespace Route_Finder
                 // Update the listText label with basket items
                 UpdateListText(lines);
 
-                MessageBox.Show($"Selected item '{itemName}' added to basket.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
@@ -362,9 +413,25 @@ namespace Route_Finder
         {
             string[] lines = System.IO.File.ReadAllLines("Basket.csv");
             List<string> basketItems = new List<string>();
-            foreach (string line in lines)
+
+            List<string> deliveryItems = new List<string>();
+            foreach (string line in basketItems)
             {
-                basketItems.Add(line);
+                string[] lineComponents = line.Split(',');
+                string itemName = lineComponents[0];
+                string weight = lineComponents[3];
+                string quantity = lineComponents[4];
+
+                string deliveryLine = $"{itemName},{weight},{quantity}";
+                deliveryItems.Add(deliveryLine);
+            }
+            //write to DeliveryItems.csv separated by commas
+            using (StreamWriter writer = new StreamWriter("DeliveryItems.csv"))
+            {
+                foreach (string line in deliveryItems)
+                {
+                    writer.WriteLine(line);
+                }
             }
         }
 
@@ -394,7 +461,7 @@ namespace Route_Finder
                 decimal subtotal = itemPrice * quantity;
                 totalPrice += subtotal;
 
-                itemsText += $"{itemName} - Quantity: {quantity}\n";
+                itemsText += $"{quantity} lot(s) of: {itemName}\n";
             }
 
             // Apply additional fees for exceeding weight limit
@@ -422,6 +489,8 @@ namespace Route_Finder
             itemsLabel.Font = new Font("Arial", 10, FontStyle.Regular);
             itemsLabel.Location = new Point(listText.Left, listText.Bottom);
             itemsLabel.ForeColor = Color.Blue;
+            itemsLabel.BackColor = Color.Transparent;
+
 
             // Add the items label below the heading
             itemsLabel.Location = new Point(listText.Left, listText.Bottom + 10);
@@ -435,21 +504,27 @@ namespace Route_Finder
             totalPriceLabel.Font = new Font("Arial", 12, FontStyle.Bold);
 
             totalPriceLabel.ForeColor = Color.Red;
+            totalPriceLabel.BackColor = Color.Transparent;
 
             // Set the location of the total price label below the basket items label
-            totalPriceLabel.Location = new Point(listText.Left, 520);
+            totalPriceLabel.Location = new Point(listText.Left, 500);
             totalPriceLabel.AutoSize = true;
 
             // Add the total price label to the form's controls
             Controls.Add(totalPriceLabel);
 
             // Display the total weight in the info text
-            infoText.Text = $"Total Weight: {totalWeight} kg";
+            weightText.Text = $"Basket Weight: {totalWeight} kg";
+
+            //infoText.Font = FontStyle.Underline;
+
+
+            weightText.BackColor = Color.DarkBlue;
 
             // Check if additional fee is applied and display it
             if (additionalFee > 0)
             {
-                infoText.Text += $"\nAdditional Fee: £{additionalFee:F2}";
+                weightText.Text += $"\nWeight Fee: £{additionalFee:F2}";
             }
 
             // Bring all labels to the front
@@ -459,10 +534,29 @@ namespace Route_Finder
             shopPnl.BringToFront();
             searchShop.BringToFront();
             searchBtn.BringToFront();
+            expandBtn.BringToFront();
 
         }
 
 
+        private void EmptyBasket()
+        {
+            // Define the path for the Basket.csv file
+            string basketFilePath = @"Basket.csv";
+
+            //emptys the file by deleting the file then creating a new file
+            File.Delete(basketFilePath);
+            File.Create(basketFilePath).Close();
+
+            //gets the new list from file and ass theres none reads nothing, displaying empty basket
+            List<string> lines = File.ReadAllLines(basketFilePath).ToList();
+            UpdateListText(lines);
+
+
+
+
+
+        }
 
 
         // Method to remove item from basket
@@ -524,7 +618,6 @@ namespace Route_Finder
                 // Update the listText label with basket items
                 UpdateListText(lines);
 
-                MessageBox.Show($"Selected item '{itemName}' removed from basket.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
@@ -576,9 +669,10 @@ namespace Route_Finder
                     Label itemLabel = new Label
                     {
                         Text = formattedItem,
-                        ForeColor = Color.White,
-                        BackColor = Color.DodgerBlue,
-                        Font = new Font("Arial", 12, FontStyle.Regular),
+                        ForeColor = Color.Black,
+                        BackColor = ColorTranslator.FromHtml("#ff3385"),
+                        Font = new Font("Arial", 15, FontStyle.Bold),
+
                         BorderStyle = BorderStyle.FixedSingle,
                         AutoSize = true,
                         Location = new Point(20, startY) // Set Y-coordinate relative to the search bar
@@ -638,8 +732,10 @@ namespace Route_Finder
 
             if (isExpanding)
             {
-                if (shopPnl.Height < 600 - (600 / 20))
+                expandBtn.BringToFront();
+                if (shopPnl.Height < 500 - (600 / 20))
                 {
+
                     if (shopPnl.Top > (600 - shopPnl.Height) / 2)
                     {
                         shopPnl.Top -= expandIncrement / 2; // Move the panel up to maintain the middle position
@@ -655,6 +751,8 @@ namespace Route_Finder
                     //shopText.Visible = true;
                     searchShop.BringToFront();
                     searchBtn.BringToFront();
+                    expandBtn.BringToFront();
+
                     //shopText.BringToFront();
                 }
             }
@@ -664,7 +762,7 @@ namespace Route_Finder
                 {
                     searchShop.Visible = false;
                     searchBtn.Visible = false;
-                
+
 
                     if (shopPnl.Top < (600 - shopPnl.Height) / 2)
                     {
@@ -683,13 +781,12 @@ namespace Route_Finder
 
 
 
-        private ListBox listBox;
-        private List<Node> nodes; // Assuming this is accessible in the class
+
 
         private void displayAddress()
         {
             // Assuming t is an instance of Traversal class
-            nodes = t.getNodes(); // Modify this method call based on your implementation
+            nodes = traversal.getNodes(); // Modify this method call based on your implementation
 
             // Create a ListBox to display the addresses
             listBox = new ListBox
@@ -704,7 +801,7 @@ namespace Route_Finder
             // Add each coordinate to the ListBox
             foreach (Node node in nodes)
             {
-                listBox.Items.Add($"  Address: {node.getX()}, {node.getY()}");
+                listBox.Items.Add($"Address: {node.getX()}, {node.getY()}");
             }
 
             // Allow the ListBox to automatically scroll
@@ -717,6 +814,10 @@ namespace Route_Finder
             Controls.Add(listBox);
         }
 
+
+        // Flag to track whether the delivery center has been added
+        private bool deliveryCenterAdded = false;
+
         // Event handler for double-clicking on addresses
         private void ListBox_DoubleClick(object sender, EventArgs e)
         {
@@ -727,17 +828,57 @@ namespace Route_Finder
             string[] parts = selectedAddress.Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
             if (parts.Length == 2)
             {
-                string coordinates = parts[1];
+
+
+                string x = parts[1][0].ToString();
+                string y = parts[1][3].ToString();
+
+
+                int coordinates = Int32.Parse(x + y);
+
+
                 // Add the selected address to the route
-                UpdateInfo(new List<string> { coordinates });
+                UpdateInfo(coordinates);
             }
         }
 
+        // Method to update the info section with selected addresses
+        private void UpdateInfo(int selectedAddress)
+        {
+            traversal.van.extendTargetNode(traversal.getNode(selectedAddress));
+            //traversal.van.extendItems(List<Items>)
 
+            // Print the selected addresses to the console
+            Console.WriteLine("Selected Addresses:");
+            foreach (int address in traversal.van.getTargetNodeCoOrd())
+            {
+                Console.WriteLine(address);
+                // Add the address to the route text
+            }
+            AddToRoute(traversal.van.getTargetNodeCoOrd()[traversal.van.getTargetNodeCoOrd().Count - 1]);
+        }
 
+        // Method to add an address to the route
+        private void AddToRoute(int address)
+        {
+            // Get the existing route text
+            string existingRoute = infoText.Text;
+
+            // If there are existing addresses, add a newline separator
+            if (!string.IsNullOrEmpty(existingRoute))
+            {
+                existingRoute += "\n";
+            }
+
+            // Append the new address to the existing route text
+            existingRoute += address.ToString();
+
+            // Update the route text
+            infoText.Text = existingRoute;
+        }
 
         // Method to update the info section with selected addresses
-        private void UpdateInfo(List<string> selectedAddresses = null)
+        private void UpdateInfo(List<string> selectedAddresses)
         {
             // If selectedAddresses is null, initialize it as an empty list
             if (selectedAddresses == null)
@@ -745,14 +886,16 @@ namespace Route_Finder
                 selectedAddresses = new List<string>();
             }
 
-            // Check if node 0,0 is already present in the selected addresses
-            bool hasDeliveryCenter = selectedAddresses.Any(address => address.StartsWith("Delivery Center: 0, 0"));
-
-            // If not present, add node 0,0 to the selected addresses
-            if (!hasDeliveryCenter)
+            // If delivery center hasn't been added yet and there are selected addresses
+            if (!deliveryCenterAdded && selectedAddresses.Count > 0)
             {
+                // Add the delivery center to the selected addresses
                 selectedAddresses.Insert(0, "Delivery Center: 0, 0");
+                deliveryCenterAdded = true; // Mark delivery center as added
             }
+
+            // Reverse the list of selected addresses to display in reverse order
+            // selectedAddresses.Reverse();
 
             // Print the selected addresses to the console
             Console.WriteLine("Selected Addresses:");
@@ -763,6 +906,7 @@ namespace Route_Finder
                 AddToRoute(address);
             }
         }
+
 
         // Method to add an address to the route
         private void AddToRoute(string address)
@@ -781,8 +925,8 @@ namespace Route_Finder
 
             // Update the route text
             infoText.Text = existingRoute;
+
+
         }
-
     }
-
 }

@@ -43,7 +43,7 @@ namespace Route_Finder
             // Read from ItemList.csv
             string[] lines = System.IO.File.ReadAllLines("ItemList.csv");
             items = new List<Item>();
-            for (int i = 1; i < ItemList.csv; i++)
+            for (int i = 1; i < lines.Length; i++)
             {
                 string[] values = lines[i].Split(',');
                 Item item = new Item();
