@@ -28,7 +28,17 @@ namespace Route_Finder
             this.nodes = nodes;
         }
 
-        private void aStar_search()
+        public void setRoot(Node root)
+        {
+            this.root = root;
+        }
+
+        public void setTarget(Node target)
+        {
+            this.target = target;
+        }
+
+        public List<Node> aStar_search()
         {
 
             // Assuming you have start and goal nodes
@@ -42,19 +52,18 @@ namespace Route_Finder
                 if (path != null)
                 {
                     // Path found, do something with it
-                    foreach (Node node in path)
-                    {
-                        Console.WriteLine(node.getStringCoOrd());
-                    }
+                    return path;
                 }
                 else
                 {
                     MessageBox.Show("No path found!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return null;
                 }
             }
             else
             {
                 MessageBox.Show("Start or goal node not found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return null;
             }
         }
 
@@ -65,14 +74,14 @@ namespace Route_Finder
             // Implementation of the A* algorithm
             HashSet<Node> closedSet = new HashSet<Node>();
             HashSet<Node> openSet = new HashSet<Node> { start };
-            Dictionary<Node, Node> cameFrom = new Dictionary<Node, Node>();
-            Dictionary<Node, int> gScore = new Dictionary<Node, int>();
-            Dictionary<Node, int> fScore = new Dictionary<Node, int>();
+            Dictionary<Node, Node> cameFrom = new Dictionary<Node, Node>(); //key is root node, value is node connected to
+            Dictionary<Node, double> gScore = new Dictionary<Node, double>();
+            Dictionary<Node, double> fScore = new Dictionary<Node, double>();
 
             foreach (Node node in nodes)
             {
-                gScore[node] = int.MaxValue;
-                fScore[node] = int.MaxValue;
+                gScore[node] = (double)int.MaxValue;
+                fScore[node] = (double)int.MaxValue;
             }
 
             gScore[start] = 0;
@@ -93,7 +102,7 @@ namespace Route_Finder
                 foreach (var neighbor in current.getConnections())
                 {
                     Node neighborNode = neighbor.Key;
-                    int tentativeGScore = gScore[current] + neighbor.Value;
+                    double tentativeGScore = gScore[current] + neighbor.Value;
 
                     if (tentativeGScore < gScore[neighborNode])
                     {

@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace Route_Finder
 {
@@ -16,7 +19,11 @@ namespace Route_Finder
         private AStar a = new AStar();
         private Van van = new Van();
 
-        
+        public Traversal()
+        {
+            a.setNodes(p.getAllNodes());
+            g.setNodes(p.getAllNodes());
+        }
 
         public void addDelivery(Node targetNode, Items items)
         {
@@ -41,21 +48,38 @@ namespace Route_Finder
             return targetNode;
         }
 
-        public void bfs(Node root, Node target)
+        public void bfs(Node root, Node target)/*This will get a path, but it will not be the most effecient*/
         {
-            b.search(root, target);
+            List<Node> path = b.search(root, target, false);
+            showPath(path);
         }
 
-        public void aStar()
+        public void aStar(Node root, Node target)
         {
+            a.setRoot(root);
+            a.setTarget(target);
+            List<Node> path = a.aStar_search();
+            showPath(path);
+        }
+
+        public void greedy(Node root, Node target)
+        {
+            g.setNodes(p.getAllNodes());
+            g.setTarget(target);
+            g.setStart(root);
+            g.setDistances(target, root);
+            List<Node> path = g.search();
+            showPath(path);
 
         }
 
-        public void greedy()
+        public void showPath(List <Node> path)
         {
-
+            foreach(Node n in path)
+            {
+                Console.WriteLine(n.getStringCoOrd());
+            }
         }
-
        
 
         public List<Node> getNodes()

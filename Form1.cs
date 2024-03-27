@@ -46,6 +46,15 @@ namespace Route_Finder
             InitializeComponent();
             setupDisplay();
             initialiseShop();
+            Node root = traversal.getNode(0);
+            Node target = traversal.getNode(10);
+            
+            traversal.aStar(root, target);
+            Console.WriteLine("*----------*");
+            traversal.bfs(root, target);
+            Console.WriteLine("*----------*");
+            traversal.greedy(root, target);
+
 
 
             this.BackColor = Color.DarkGray;
