@@ -25,13 +25,16 @@ namespace Route_Finder
             return totalPath;
         }
 
-        public int heuristicFunction(Node node, Node target)
+        public double heuristicFunction(Node node, Node target) //this is the broken bit. 
         {
+            return node.getDistanceToTarget();
+
             if (node == target)
             {
                 return 0;
             }
-            return 1;
+            return 1; //distance between current and target.
+                      //So if was at a node 5 from the next and that next node was 2 from target it would return 7.
         }
     }
 }

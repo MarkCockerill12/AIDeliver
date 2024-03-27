@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -12,9 +13,29 @@ namespace Route_Finder
         List<Node> nodes = new List<Node>();
         PriroityQueue priroityQueue = new PriroityQueue();
         Heuristics heuristics = new Heuristics();
-        Node target = null;
+        List<Node> visited = new List<Node>();
 
-        public Greedy() { }
+        Node target = null;
+        Node startNode = null;
+
+        public Greedy()
+        {
+            
+        }
+
+        public void setDistances(Node target, Node startNode)
+        {
+            BFS setDistances = new BFS();
+            foreach(Node node in nodes)
+            {
+                if (node != startNode)
+                {
+                    setDistances.search(node, target, true);
+
+                }
+            }
+        }
+
         public void setNodes(List<Node> nodes)
         {
             this.nodes = nodes;
@@ -25,22 +46,35 @@ namespace Route_Finder
             this.target = target;
         }
 
-        
-        private void gbfSearch()
+        public void setStart(Node start)
+        { 
+            this.startNode = start;
+        }
+
+        public List<Node> search()
+        {
+            gbfSearch();
+            return visited;
+        }
+
+
+        public int gbfSearch()
         {
             // Perform GBF search algorithm
-            HashSet<Node> visited = new HashSet<Node>();
 
-            // Start GBF from the first node
-            Node startNode = nodes[0];
+            // Start GBF from the root node
             priroityQueue.enqueue(startNode, heuristics.heuristicFunction(startNode, target)); // Enqueue with heuristic value
             visited.Add(startNode);
+            Node currentNode = null;
 
             while (priroityQueue.count() > 0)
             {
-                Node currentNode = priroityQueue.dequeue();
+                currentNode = priroityQueue.dequeue();
 
-                // Process current node here...
+                if (currentNode == target)
+                {
+                    return 0;
+                }
 
                 foreach (var neighbor in currentNode.getConnections().Keys)
                 {
@@ -50,7 +84,12 @@ namespace Route_Finder
                         visited.Add(neighbor);
                     }
                 }
+
+
+
             }
+
+            return 1;
         }
 
     }

@@ -51,6 +51,7 @@ namespace Route_Finder
             InitializeComponent();
             setupDisplay();
             initialiseShop();
+
             this.BackColor = Color.DarkGray;
 
             /*

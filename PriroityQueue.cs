@@ -21,7 +21,7 @@ namespace Route_Finder
             private int size = -1;
             // Function to insert a new element
             // into priority queue
-            public void enqueue(Node node, int priority)
+            public void enqueue(Node node, double priority)
             {
                 // Increase the size
                 size++;
@@ -34,7 +34,7 @@ namespace Route_Finder
             // Function to check the top element
             public int peek()
             {
-                int highestPriority = int.MinValue;
+                double highestPriority = int.MinValue;
                 int ind = -1;
 
                 // Check for the element with
@@ -45,8 +45,7 @@ namespace Route_Finder
                     // If priority is same choose
                     // the element with the
                     // highest value
-                    if (highestPriority == pr[i].priority && ind > -1
-                        && pr[ind].getX() < pr[i].getX() && pr[ind].getY() < pr[i].getY())
+                    if (highestPriority == pr[i].priority && ind > -1 && pr[ind].getIndex() < pr[i].getIndex())
                     {
                         highestPriority = pr[i].priority;
                         ind = i;
@@ -56,6 +55,7 @@ namespace Route_Finder
                         highestPriority = pr[i].priority;
                         ind = i;
                     }
+             
                 }
 
                 // Return position of the element
@@ -70,6 +70,7 @@ namespace Route_Finder
                 // with highest priority
                 int ind = peek();
                 Node temp = pr[ind];
+
                 // Shift the element one index before
                 // from the position of the element
                 // with highest priority is found
@@ -86,7 +87,7 @@ namespace Route_Finder
 
             public int count()
             {
-                return pr.Length;
+                return size+1;
             }
             
       

@@ -54,6 +54,7 @@ namespace Route_Finder
                         Console.WriteLine(e);
                     }
 
+                    //p.setConnectionsTo(points[index]);
                     index++;
                 }
                 i++;
