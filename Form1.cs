@@ -36,6 +36,8 @@ namespace Route_Finder
         private Button stateBtn;
         private Button routeBtn;
         private Traversal traversal = new Traversal();
+        private ListBox listBox;
+        private List<Node> nodes;
 
 
 
@@ -674,8 +676,7 @@ namespace Route_Finder
 
 
 
-        private ListBox listBox;
-        private List<Node> nodes; // Assuming this is accessible in the class
+        
 
         private void displayAddress()
         {
@@ -727,9 +728,15 @@ namespace Route_Finder
 
 
 
+        //THINGS TO FIX: currently it displays the selected address then the delivery entre, it needs to be the other way around
+        //The selected address gets overwritten instead of added
+        //we need to be able to select multiple addresses
+
         // Method to update the info section with selected addresses
-        private void UpdateInfo(List<string> selectedAddresses = null)
+        private void UpdateInfo(List<string> selectedAddresses)
         {
+
+
             // If selectedAddresses is null, initialize it as an empty list
             if (selectedAddresses == null)
             {
@@ -737,12 +744,13 @@ namespace Route_Finder
             }
 
             // Check if node 0,0 is already present in the selected addresses
-            bool hasDeliveryCenter = selectedAddresses.Any(address => address.StartsWith("Delivery Center: 0, 0"));
+            bool hasDeliveryCenter = selectedAddresses.Contains("Delivery Center: 0, 0");
+               /* Any(address => address.StartsWith("Delivery Center: 0, 0"));*/
 
             // If not present, add node 0,0 to the selected addresses
             if (!hasDeliveryCenter)
             {
-                selectedAddresses.Insert(0, "Delivery Center: 0, 0");
+                selectedAddresses.Add("0,0");
             }
 
             // Print the selected addresses to the console
