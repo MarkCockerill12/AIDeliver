@@ -40,6 +40,7 @@ namespace Route_Finder
         private ListBox listBox;
         private List<Node> nodes;
         private Button PurchaseBaskt;
+        private Panel selectedAddressPanel;
 
 
 
@@ -131,6 +132,15 @@ namespace Route_Finder
             Controls.Add(routeBtn); // Add button to form
             routeBtn.BringToFront();
 
+            //panel for the selected adresses the have scrolling
+            selectedAddressPanel = new Panel();
+            selectedAddressPanel.Location = new Point(060 / 4, 410); // Adjust location based on your layout
+            selectedAddressPanel.Size = new Size(70, 150); // Adjust size based on your layout
+            selectedAddressPanel.BackColor = Color.DarkBlue;
+            selectedAddressPanel.AutoScroll = true; // Enable vertical scrolling
+            Controls.Add(selectedAddressPanel);
+            selectedAddressPanel.BringToFront();
+
 
             // button to buy basket
             PurchaseBaskt = new Button { Location = new Point(790, 496), Size = new Size(20, 10), Font = new Font("Arial", 9, FontStyle.Regular), AutoSize = true, BackColor = Color.Green, };
@@ -166,13 +176,13 @@ namespace Route_Finder
                 case 1:
                     for (int index = 0; index < traversal.van.getTargetNodeCoOrd().Count; index++)
                     {
-                        traversal.bfs(traversal.getNode(0), traversal.getNode(traversal.van.getTargetNodeCoOrd()[index]));
+                        traversal.aStar(traversal.getNode(0), traversal.getNode(traversal.van.getTargetNodeCoOrd()[index]));  
                     }
                     break;
                 case 2:
                     for (int index = 0; index < traversal.van.getTargetNodeCoOrd().Count; index++)
                     {
-                        traversal.aStar(traversal.getNode(0), traversal.getNode(traversal.van.getTargetNodeCoOrd()[index]));
+                        traversal.bfs(traversal.getNode(0), traversal.getNode(traversal.van.getTargetNodeCoOrd()[index]));
                     }
                     break;
                 case 3:
@@ -797,6 +807,7 @@ namespace Route_Finder
             AddToRoute(traversal.van.getTargetNodeCoOrd()[traversal.van.getTargetNodeCoOrd().Count - 1]);
         }
 
+
         // Method to add an address to the route
         private void AddToRoute(int address)
         {
@@ -810,62 +821,60 @@ namespace Route_Finder
             }
 
             // Append the new address to the existing route text
-            existingRoute += address.ToString();
+            string name = address.ToString();
+
+            Button removeBtn = new Button();
+            removeBtn.Text = name;
+            removeBtn.Click += RemoveAdress_Click;
+            removeBtn.Size = new Size(40, 30);
+            removeBtn.Font = new Font("Comic Sans MS", 12, FontStyle.Regular);
+            removeBtn.AutoSize = true;
+            removeBtn.BackColor = ColorTranslator.FromHtml("#1ac6ff");
+
+            int buttonCount = selectedAddressPanel.Controls.OfType<Button>().ToList().Count;
+            int verticalPosition = buttonCount * (removeBtn.Height + 10); // Adjust vertical spacing as needed
+
+            // Set the position of the button
+            removeBtn.Location = new Point(5, verticalPosition);
+
+
+            selectedAddressPanel.Controls.Add(removeBtn);
+
+
+            /*
+             * make a pannel to display this stuff on 
+             * 
+             * */
 
             // Update the route text
             infoText.Text = existingRoute;
         }
 
-        // Method to update the info section with selected addresses
-        private void UpdateInfo(List<string> selectedAddresses)
+        private void RemoveAdress_Click(object sender, EventArgs e)
         {
-            // If selectedAddresses is null, initialize it as an empty list
-            if (selectedAddresses == null)
-            {
-                selectedAddresses = new List<string>();
-            }
 
-            // If delivery center hasn't been added yet and there are selected addresses
-            if (!deliveryCenterAdded && selectedAddresses.Count > 0)
-            {
-                // Add the delivery center to the selected addresses
-                selectedAddresses.Insert(0, "Delivery Center: 0, 0");
-                deliveryCenterAdded = true; // Mark delivery center as added
-            }
+            Button clickedButton = sender as Button;
 
-            // Reverse the list of selected addresses to display in reverse order
-            // selectedAddresses.Reverse();
-
-            // Print the selected addresses to the console
-            Console.WriteLine("Selected Addresses:");
-            foreach (string address in selectedAddresses)
+            // remoev button from container
+            if (clickedButton != null && clickedButton.Parent != null)
             {
-                Console.WriteLine(address);
-                // Add the address to the route text
-                AddToRoute(address);
+                Panel parentPanel = clickedButton.Parent as Panel;
+                if (parentPanel != null)
+                {
+                    int removedButtonIndex = parentPanel.Controls.IndexOf(clickedButton);
+                    parentPanel.Controls.Remove(clickedButton);
+
+                    // position of buttons adjusting 
+                    for (int i = removedButtonIndex; i < parentPanel.Controls.Count; i++)
+                    {
+                        Control control = parentPanel.Controls[i];
+                        control.Top -= clickedButton.Height + 5; // spacing between buttons vertical
+                    }
+                }
             }
         }
 
 
-        // Method to add an address to the route
-        private void AddToRoute(string address)
-        {
-            // Get the existing route text
-            string existingRoute = infoText.Text;
-
-            // If there are existing addresses, add a newline separator
-            if (!string.IsNullOrEmpty(existingRoute))
-            {
-                existingRoute += "\n";
-            }
-
-            // Append the new address to the existing route text
-            existingRoute += address;
-
-            // Update the route text
-            infoText.Text = existingRoute;
-
-
-        }
+        
     }
 }

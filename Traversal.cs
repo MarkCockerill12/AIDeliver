@@ -73,18 +73,16 @@ namespace Route_Finder
 
         }
 
-        public void showPath(List <Node> path)
+        public void showPath(List<Node> path)
         {
             StringBuilder pathString = new StringBuilder();
             foreach (Node node in path)
             {
                 pathString.AppendLine(node.getStringCoOrd());
-                Console.WriteLine(node.getStringCoOrd());
             }
 
             // Display the path in a message box
-            MessageBox.Show("Route Path:" + pathString.ToString(), "Route Path", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
+            MessageBox.Show("Route Path:\n" + pathString.ToString(), "Route Path", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
 

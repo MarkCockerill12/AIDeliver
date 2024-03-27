@@ -17,6 +17,7 @@ namespace Route_Finder
         Node target = null;
         List<Node> nodes = new List<Node>();
         Heuristics heuristics = new Heuristics();
+        int counterNode = 0;
 
         public AStar()
         {
@@ -44,15 +45,29 @@ namespace Route_Finder
             // Assuming you have start and goal nodes
             Node startNode = root;
             Node goalNode = target;
+            
 
             if (startNode != null && goalNode != null)
             {
+                if (counterNode == 0)
+                {
+                   startNode = root;
+                }
+                else
+                {
+                    startNode = target;
+                }
+
                 // Perform A* search algorithm
                 List<Node> path = aStar(startNode, goalNode, heuristics.HeuristicCostEstimate(root, target));
                 if (path != null)
                 {
                     // Path found, do something with it
+                    counterNode++;
+                    Console.WriteLine(counterNode);
+                    Console.WriteLine("Path found!");
                     return path;
+
                 }
                 else
                 {
