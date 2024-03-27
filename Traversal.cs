@@ -14,7 +14,7 @@ namespace Route_Finder
         private Greedy g = new Greedy();
         private BFS b = new BFS();
         private AStar a = new AStar();
-        private Van van = new Van();
+        public Van van = new Van();
 
         
 

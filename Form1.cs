@@ -800,7 +800,7 @@ namespace Route_Finder
             // Add each coordinate to the ListBox
             foreach (Node node in nodes)
             {
-                listBox.Items.Add($"  Address: {node.getX()}, {node.getY()}");
+                listBox.Items.Add($"Address: {node.getX()}, {node.getY()}");
             }
 
             // Allow the ListBox to automatically scroll
@@ -813,6 +813,10 @@ namespace Route_Finder
             Controls.Add(listBox);
         }
 
+
+        // Flag to track whether the delivery center has been added
+        private bool deliveryCenterAdded = false;
+
         // Event handler for double-clicking on addresses
         private void ListBox_DoubleClick(object sender, EventArgs e)
         {
@@ -823,39 +827,74 @@ namespace Route_Finder
             string[] parts = selectedAddress.Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
             if (parts.Length == 2)
             {
-                string coordinates = parts[1];
+
+
+                string x = parts[1][0].ToString();
+                string y = parts[1][3].ToString();
+
+
+                int coordinates = Int32.Parse(x + y);
+
+
                 // Add the selected address to the route
-                UpdateInfo(new List<string> { coordinates });
+                UpdateInfo(coordinates);
             }
         }
 
+        // Method to update the info section with selected addresses
+        private void UpdateInfo(int selectedAddress)
+        {
+            traversal.van.extendTargetNode(traversal.getNode(selectedAddress));
+            //traversal.van.extendItems(List<Items>)
 
+            // Print the selected addresses to the console
+            Console.WriteLine("Selected Addresses:");
+            foreach (int address in traversal.van.getTargetNodeCoOrd())
+            {
+                Console.WriteLine(address);
+                // Add the address to the route text
+            }
+            AddToRoute(traversal.van.getTargetNodeCoOrd()[traversal.van.getTargetNodeCoOrd().Count - 1]);
+        }
 
+        // Method to add an address to the route
+        private void AddToRoute(int address)
+        {
+            // Get the existing route text
+            string existingRoute = infoText.Text;
 
-        //THINGS TO FIX: currently it displays the selected address then the delivery entre, it needs to be the other way around
-        //The selected address gets overwritten instead of added
-        //we need to be able to select multiple addresses
+            // If there are existing addresses, add a newline separator
+            if (!string.IsNullOrEmpty(existingRoute))
+            {
+                existingRoute += "\n";
+            }
+
+            // Append the new address to the existing route text
+            existingRoute += address.ToString();
+
+            // Update the route text
+            infoText.Text = existingRoute;
+        }
 
         // Method to update the info section with selected addresses
         private void UpdateInfo(List<string> selectedAddresses)
         {
-
-
             // If selectedAddresses is null, initialize it as an empty list
             if (selectedAddresses == null)
             {
                 selectedAddresses = new List<string>();
             }
 
-            // Check if node 0,0 is already present in the selected addresses
-            bool hasDeliveryCenter = selectedAddresses.Contains("Delivery Center: 0, 0");
-               /* Any(address => address.StartsWith("Delivery Center: 0, 0"));*/
-
-            // If not present, add node 0,0 to the selected addresses
-            if (!hasDeliveryCenter)
+            // If delivery center hasn't been added yet and there are selected addresses
+            if (!deliveryCenterAdded && selectedAddresses.Count > 0)
             {
-                selectedAddresses.Add("0,0");
+                // Add the delivery center to the selected addresses
+                selectedAddresses.Insert(0, "Delivery Center: 0, 0");
+                deliveryCenterAdded = true; // Mark delivery center as added
             }
+
+            // Reverse the list of selected addresses to display in reverse order
+            // selectedAddresses.Reverse();
 
             // Print the selected addresses to the console
             Console.WriteLine("Selected Addresses:");
@@ -866,6 +905,7 @@ namespace Route_Finder
                 AddToRoute(address);
             }
         }
+
 
         // Method to add an address to the route
         private void AddToRoute(string address)
@@ -884,8 +924,8 @@ namespace Route_Finder
 
             // Update the route text
             infoText.Text = existingRoute;
+
+
         }
-
     }
-
 }
