@@ -164,19 +164,19 @@ namespace Route_Finder
             switch (currentState)
             {
                 case 1:
-                    for (int index = 0; index < traversal.van.getTargetNodeCoOrd().Count - 1; index++)
+                    for (int index = 0; index < traversal.van.getTargetNodeCoOrd().Count; index++)
                     {
                         traversal.bfs(traversal.getNode(0), traversal.getNode(traversal.van.getTargetNodeCoOrd()[index]));
                     }
                     break;
                 case 2:
-                    for (int index = 0; index < traversal.van.getTargetNodeCoOrd().Count - 1; index++)
+                    for (int index = 0; index < traversal.van.getTargetNodeCoOrd().Count; index++)
                     {
                         traversal.aStar(traversal.getNode(0), traversal.getNode(traversal.van.getTargetNodeCoOrd()[index]));
                     }
                     break;
                 case 3:
-                    for (int index = 0; index < traversal.van.getTargetNodeCoOrd().Count - 1; index++)
+                    for (int index = 0; index < traversal.van.getTargetNodeCoOrd().Count; index++)
                     {
                         traversal.greedy(traversal.getNode(0), traversal.getNode(traversal.van.getTargetNodeCoOrd()[index]));
                     }
