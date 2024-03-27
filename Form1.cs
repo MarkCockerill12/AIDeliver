@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Linq;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Header;
+using System.Text;
 
 //sources
 //read from file- https://www.c-sharpcorner.com/UploadFile/mahesh/how-to-read-a-text-file-in-C-Sharp/#:~:text=The%20File%20class%20provides%20two,text%20file%20into%20a%20string.
@@ -38,6 +39,7 @@ namespace Route_Finder
 
 
 
+
         Label totalPriceLabel = new Label();
         Label itemsLabel = new Label();
 
@@ -63,26 +65,20 @@ namespace Route_Finder
             timer.Interval = 1;
             timer.Tick += Timer_Tick;
 
-            drawMap();
+            displayAddress();
         }
 
         private void setupDisplay()
         {
             // create a colored block for the info 
-            infoPnl = new Panel { BackColor = Color.DarkBlue, Dock = DockStyle.Bottom, Height = 200, Width = 900 };
+            infoPnl = new Panel { BackColor = Color.DarkBlue, Dock = DockStyle.Bottom, Height = 195, Width = 900 };
             Controls.Add(infoPnl);
             infoPnl.SendToBack();
 
             // create a colored block for the List    
-            listPnl = new Panel { BackColor = Color.Black, Dock = DockStyle.Right, Height = 600, Width = 900 / 3 };
+            listPnl = new Panel { BackColor = Color.Black, Dock = DockStyle.Right, Height = 600, Width = 300 };
             Controls.Add(listPnl);
             listPnl.SendToBack();
-
-            //add text
-            mapText = new Label { Text = "addresses go here", ForeColor = Color.White, BackColor = Color.DodgerBlue, Font = new Font("Arial", 20, FontStyle.Regular), BorderStyle = BorderStyle.None, AutoSize = true };
-            mapText.Location = new Point((900 - mapText.Width) / 4, (600 - mapText.Height) / 4);
-            Controls.Add(mapText);
-            mapText.BringToFront();
 
             //add text
             listText = new Label { Text = "list goes here", ForeColor = Color.White, BackColor = Color.DodgerBlue, Font = new Font("Arial", 20, FontStyle.Regular), BorderStyle = BorderStyle.None, AutoSize = true, AutoEllipsis = false, MaximumSize = new Size(400, 900), Location = new Point(625, 10) };
@@ -90,7 +86,7 @@ namespace Route_Finder
             listText.BringToFront();
 
             //add text
-            infoText = new Label { Text = "info goes here", ForeColor = Color.White, BackColor = Color.DodgerBlue, Font = new Font("Arial", 20, FontStyle.Regular), BorderStyle = BorderStyle.None, AutoSize = true, AutoEllipsis = false, MaximumSize = new Size(400, 900), Location = new Point(10, 420) };
+            infoText = new Label { Text = "info goes here", ForeColor = Color.White, BackColor = Color.DodgerBlue, Font = new Font("Arial", 20, FontStyle.Regular), BorderStyle = BorderStyle.None, AutoSize = true, AutoEllipsis = false, Location = new Point(10, 380) };
             Controls.Add(infoText);
             infoText.BringToFront();
 
@@ -126,16 +122,88 @@ namespace Route_Finder
             switch (currentState)
             {
                 case 1:
+
                     MessageBox.Show("This will be the A*");
-                    //Astar_search();
+                    // Send the two nodes to the GBF algorithm
+                    if (listBox.SelectedItems.Count == 2)
+                    {
+                        // Get the indices of the selected nodes
+                        int index1 = listBox.SelectedIndices[0];
+                        int index2 = listBox.SelectedIndices[1];
+
+                        // Get the selected nodes
+                        Node node1 = nodes[index1];
+                        Node node2 = nodes[index2];
+
+                        // Call the BFS algorithm with the selected nodes
+                        /* bool routeSuccess = Astar_search(node1, node2); travers.Astar(whatever bits);
+
+                         // Display the result
+                         if (routeSuccess)
+                             Console.WriteLine("Route successful");
+                         else
+                             Console.WriteLine("Route failed");*/
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please select exactly two nodes for A* route finding.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+
                     break;
                 case 2:
-                    MessageBox.Show("This will be the BFS");
-                    //BFS_search();
+
+                    // Send the two nodes to the BFS algorithm
+                    if (listBox.SelectedItems.Count == 2)
+                    {
+                        // Get the indices of the selected nodes
+                        int index1 = listBox.SelectedIndices[0];
+                        int index2 = listBox.SelectedIndices[1];
+
+                        // Get the selected nodes
+                        Node node1 = nodes[index1];
+                        Node node2 = nodes[index2];
+
+                        // Call the BFS algorithm with the selected nodes
+                       /* bool routeSuccess = BFS_search(node1, node2); travers.BFS(whatever bits);
+
+                        // Display the result
+                        if (routeSuccess)
+                            Console.WriteLine("Route successful");
+                        else
+                            Console.WriteLine("Route failed");*/
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please select exactly two nodes for BFS route finding.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                     break;
                 case 3:
-                    MessageBox.Show("This will be the GBF");
-                    //GBF_search();
+
+                    // Send the two nodes to the GBF algorithm
+                    if (listBox.SelectedItems.Count == 2)
+                    {
+                        // Get the indices of the selected nodes
+                        int index1 = listBox.SelectedIndices[0];
+                        int index2 = listBox.SelectedIndices[1];
+
+                        // Get the selected nodes
+                        Node node1 = nodes[index1];
+                        Node node2 = nodes[index2];
+
+                        // Call the BFS algorithm with the selected nodes
+                        /* bool routeSuccess = GBF_search(node1, node2); travers.GBF(whatever bits);
+
+                         // Display the result
+                         if (routeSuccess)
+                             Console.WriteLine("Route successful");
+                         else
+                             Console.WriteLine("Route failed");*/
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please select exactly two nodes for GBF route finding.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    
                     break;
                 default:
                     break;
@@ -175,11 +243,6 @@ namespace Route_Finder
             searchBtn = new Button { Text = "🔎", ForeColor = Color.Black, FlatStyle = FlatStyle.Popup, Font = new Font("Arial", 15, FontStyle.Regular), Location = new Point(((900 / 4) + 350), 60), Size = new Size(40, 40), BackColor = Color.White, Visible = false };
             searchBtn.Click += new EventHandler(this.searchBtn_Click);
             Controls.Add(this.searchBtn);
-
-            /*
-                        //add text
-                        shopText = new Label { Text = "Shop results", ForeColor = Color.White, BackColor = Color.DodgerBlue, Font = new Font("Arial", 20, FontStyle.Regular), BorderStyle = BorderStyle.None, AutoSize = true, AutoEllipsis = false, MaximumSize = new Size(400, 900), Location = new Point(900 / 4, 110), Visible = false };
-                        Controls.Add(shopText);*/
 
             // Panel to contain shop items with scrolling
             Panel shopItemsPanel = new Panel();
@@ -295,6 +358,17 @@ namespace Route_Finder
             }
         }
 
+        private void commitToBasket()
+        {
+            string[] lines = System.IO.File.ReadAllLines("Basket.csv");
+            List<string> basketItems = new List<string>();
+            foreach (string line in lines)
+            {
+                basketItems.Add(line);
+            }
+        }
+
+
 
 
 
@@ -385,7 +459,6 @@ namespace Route_Finder
             shopPnl.BringToFront();
             searchShop.BringToFront();
             searchBtn.BringToFront();
-            shopText.BringToFront();
 
         }
 
@@ -591,7 +664,7 @@ namespace Route_Finder
                 {
                     searchShop.Visible = false;
                     searchBtn.Visible = false;
-                    //shopText.Visible = false;
+                
 
                     if (shopPnl.Top < (600 - shopPnl.Height) / 2)
                     {
@@ -608,10 +681,108 @@ namespace Route_Finder
             }
         }
 
-        private void drawMap()
-        {
 
+
+        private ListBox listBox;
+        private List<Node> nodes; // Assuming this is accessible in the class
+
+        private void displayAddress()
+        {
+            // Assuming t is an instance of Traversal class
+            nodes = t.getNodes(); // Modify this method call based on your implementation
+
+            // Create a ListBox to display the addresses
+            listBox = new ListBox
+            {
+                Font = new Font("Arial", 10, FontStyle.Regular),
+                BorderStyle = BorderStyle.FixedSingle,
+                Size = new Size(585, 370), // Adjust the size as needed
+                Location = new Point(0, 0), // Adjust the location as needed
+                SelectionMode = SelectionMode.MultiExtended // Allow multiple selections
+            };
+
+            // Add each coordinate to the ListBox
+            foreach (Node node in nodes)
+            {
+                listBox.Items.Add($"  Address: {node.getX()}, {node.getY()}");
+            }
+
+            // Allow the ListBox to automatically scroll
+            listBox.ScrollAlwaysVisible = true;
+
+            // Add double-click event handler for selecting addresses
+            listBox.DoubleClick += ListBox_DoubleClick;
+
+            // Add the ListBox to the form's controls
+            Controls.Add(listBox);
         }
+
+        // Event handler for double-clicking on addresses
+        private void ListBox_DoubleClick(object sender, EventArgs e)
+        {
+            // Get the selected address
+            string selectedAddress = listBox.SelectedItem.ToString();
+
+            // Extract the coordinates from the selected address
+            string[] parts = selectedAddress.Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length == 2)
+            {
+                string coordinates = parts[1];
+                // Add the selected address to the route
+                UpdateInfo(new List<string> { coordinates });
+            }
+        }
+
+
+
+
+        // Method to update the info section with selected addresses
+        private void UpdateInfo(List<string> selectedAddresses = null)
+        {
+            // If selectedAddresses is null, initialize it as an empty list
+            if (selectedAddresses == null)
+            {
+                selectedAddresses = new List<string>();
+            }
+
+            // Check if node 0,0 is already present in the selected addresses
+            bool hasDeliveryCenter = selectedAddresses.Any(address => address.StartsWith("Delivery Center: 0, 0"));
+
+            // If not present, add node 0,0 to the selected addresses
+            if (!hasDeliveryCenter)
+            {
+                selectedAddresses.Insert(0, "Delivery Center: 0, 0");
+            }
+
+            // Print the selected addresses to the console
+            Console.WriteLine("Selected Addresses:");
+            foreach (string address in selectedAddresses)
+            {
+                Console.WriteLine(address);
+                // Add the address to the route text
+                AddToRoute(address);
+            }
+        }
+
+        // Method to add an address to the route
+        private void AddToRoute(string address)
+        {
+            // Get the existing route text
+            string existingRoute = infoText.Text;
+
+            // If there are existing addresses, add a newline separator
+            if (!string.IsNullOrEmpty(existingRoute))
+            {
+                existingRoute += "\n";
+            }
+
+            // Append the new address to the existing route text
+            existingRoute += address;
+
+            // Update the route text
+            infoText.Text = existingRoute;
+        }
+
     }
 
 }
