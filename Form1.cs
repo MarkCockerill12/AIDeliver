@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Header;
 using System.Text;
+using System.Reflection;
 
 //sources
 //read from file- https://www.c-sharpcorner.com/UploadFile/mahesh/how-to-read-a-text-file-in-C-Sharp/#:~:text=The%20File%20class%20provides%20two,text%20file%20into%20a%20string.
@@ -51,7 +52,6 @@ namespace Route_Finder
             InitializeComponent();
             setupDisplay();
             initialiseShop();
-
             this.BackColor = Color.DarkGray;
 
             /*
@@ -74,6 +74,7 @@ namespace Route_Finder
         {
             // create a colored block for the info 
             infoPnl = new Panel { BackColor = Color.DarkBlue, Dock = DockStyle.Bottom, Height = 195, Width = 900 };
+            infoPnl.AutoScroll = true;
             Controls.Add(infoPnl);
             infoPnl.SendToBack();
 
@@ -163,88 +164,22 @@ namespace Route_Finder
             switch (currentState)
             {
                 case 1:
-
-                    MessageBox.Show("This will be the A*");
-                    // Send the two nodes to the GBF algorithm
-                    if (listBox.SelectedItems.Count == 2)
+                    for (int index = 0; index < traversal.van.getTargetNodeCoOrd().Count - 1; index++)
                     {
-                        // Get the indices of the selected nodes
-                        int index1 = listBox.SelectedIndices[0];
-                        int index2 = listBox.SelectedIndices[1];
-
-                        // Get the selected nodes
-                        Node node1 = nodes[index1];
-                        Node node2 = nodes[index2];
-
-                        // Call the BFS algorithm with the selected nodes
-                        /* bool routeSuccess = Astar_search(node1, node2); travers.Astar(whatever bits);
-
-                         // Display the result
-                         if (routeSuccess)
-                             Console.WriteLine("Route successful");
-                         else
-                             Console.WriteLine("Route failed");*/
+                        traversal.bfs(traversal.getNode(0), traversal.getNode(traversal.van.getTargetNodeCoOrd()[index]));
                     }
-                    else
-                    {
-                        MessageBox.Show("Please select exactly two nodes for A* route finding.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-
                     break;
                 case 2:
-
-                    // Send the two nodes to the BFS algorithm
-                    if (listBox.SelectedItems.Count == 2)
+                    for (int index = 0; index < traversal.van.getTargetNodeCoOrd().Count - 1; index++)
                     {
-                        // Get the indices of the selected nodes
-                        int index1 = listBox.SelectedIndices[0];
-                        int index2 = listBox.SelectedIndices[1];
-
-                        // Get the selected nodes
-                        Node node1 = nodes[index1];
-                        Node node2 = nodes[index2];
-
-                        // Call the BFS algorithm with the selected nodes
-                        /* bool routeSuccess = BFS_search(node1, node2); travers.BFS(whatever bits);
-
-                         // Display the result
-                         if (routeSuccess)
-                             Console.WriteLine("Route successful");
-                         else
-                             Console.WriteLine("Route failed");*/
-                    }
-                    else
-                    {
-                        MessageBox.Show("Please select exactly two nodes for BFS route finding.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        traversal.aStar(traversal.getNode(0), traversal.getNode(traversal.van.getTargetNodeCoOrd()[index]));
                     }
                     break;
                 case 3:
-
-                    // Send the two nodes to the GBF algorithm
-                    if (listBox.SelectedItems.Count == 2)
+                    for (int index = 0; index < traversal.van.getTargetNodeCoOrd().Count - 1; index++)
                     {
-                        // Get the indices of the selected nodes
-                        int index1 = listBox.SelectedIndices[0];
-                        int index2 = listBox.SelectedIndices[1];
-
-                        // Get the selected nodes
-                        Node node1 = nodes[index1];
-                        Node node2 = nodes[index2];
-
-                        // Call the BFS algorithm with the selected nodes
-                        /* bool routeSuccess = GBF_search(node1, node2); travers.GBF(whatever bits);
-
-                         // Display the result
-                         if (routeSuccess)
-                             Console.WriteLine("Route successful");
-                         else
-                             Console.WriteLine("Route failed");*/
+                        traversal.greedy(traversal.getNode(0), traversal.getNode(traversal.van.getTargetNodeCoOrd()[index]));
                     }
-                    else
-                    {
-                        MessageBox.Show("Please select exactly two nodes for GBF route finding.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-
                     break;
                 default:
                     break;
