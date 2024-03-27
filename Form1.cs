@@ -355,9 +355,25 @@ namespace Route_Finder
         {
             string[] lines = System.IO.File.ReadAllLines("Basket.csv");
             List<string> basketItems = new List<string>();
-            foreach (string line in lines)
+
+            List<string> deliveryItems = new List<string>();
+            foreach (string line in basketItems)
             {
-                basketItems.Add(line);
+                string[] lineComponents = line.Split(',');
+                string itemName = lineComponents[0];
+                string weight = lineComponents[3];
+                string quantity = lineComponents[4];
+
+                string deliveryLine = $"{itemName},{weight},{quantity}";
+                deliveryItems.Add(deliveryLine);
+            }
+            //write to DeliveryItems.csv separated by commas
+            using (StreamWriter writer = new StreamWriter("DeliveryItems.csv"))
+            {
+                foreach (string line in deliveryItems)
+                {
+                    writer.WriteLine(line);
+                }
             }
         }
 
